@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AoCTools",
+        "repositoryURL": "https://github.com/gereons/AoCTools",
+        "state": {
+          "branch": null,
+          "revision": "0df17d70e17c55d20ce64fecad721d0394bf57cd",
+          "version": "0.0.21"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
