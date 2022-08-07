@@ -7,20 +7,35 @@
 import AoCTools
 
 final class Day01: AOCDay {
-    let input: String
+    let modules: [Int]
+    
     init(rawInput: String? = nil) {
-        self.input = rawInput ?? Self.rawInput
+        let input = rawInput ?? Self.rawInput
+        modules = input.components(separatedBy: "\n").map { Int($0)! }
     }
 
     func part1() -> Int {
-        return 0
+        modules.reduce(0) { $0 + fuel(for: $1) }
     }
 
     func part2() -> Int {
-        return 0
+        var total = 0
+        for mod in modules {
+            var fuel = fuel(for: mod)
+            total += fuel
+            while true {
+                fuel = self.fuel(for: fuel)
+                if fuel > 0 {
+                    total += fuel
+                } else {
+                    break
+                }
+            }
+        }
+        return total
     }
-}
 
-extension Day01 {
-    static var rawInput: String { "foo" }
+    private func fuel(for weight: Int) -> Int {
+        (weight / 3) - 2
+    }
 }
