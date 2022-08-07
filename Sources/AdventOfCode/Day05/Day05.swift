@@ -7,16 +7,25 @@
 import AoCTools
 
 final class Day05: AOCDay {
-    let input: String
+    let program: [Int]
     init(rawInput: String? = nil) {
-        self.input = rawInput ?? Self.rawInput
+        let input = rawInput ?? Self.rawInput
+        program = input.components(separatedBy: ",").map { Int($0)! }
     }
 
     func part1() -> Int {
-        return 0
+        let vm = IntcodeVM()
+        vm.initialMemory = program
+        vm.inputs = [1]
+        vm.run()
+        return vm.outputs.last!
     }
 
     func part2() -> Int {
-        return 0
+        let vm = IntcodeVM()
+        vm.initialMemory = program
+        vm.inputs = [5]
+        vm.run()
+        return vm.outputs.last!
     }
 }

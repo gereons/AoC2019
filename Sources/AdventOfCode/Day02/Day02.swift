@@ -7,16 +7,33 @@
 import AoCTools
 
 final class Day02: AOCDay {
-    let input: String
+    let program: [Int]
     init(rawInput: String? = nil) {
-        self.input = rawInput ?? Self.rawInput
+        let input = rawInput ?? Self.rawInput
+        program = input.components(separatedBy: ",").map { Int($0)! }
     }
 
     func part1() -> Int {
-        return 0
+        result(for: 12, 2)
     }
 
     func part2() -> Int {
-        return 0
+        for noun in 0..<100 {
+            for verb in 0..<100 {
+                if result(for: noun, verb) == 19690720 {
+                    return 100 * noun + verb
+                }
+            }
+        }
+        fatalError()
+    }
+
+    private func result(for noun: Int, _ verb: Int) -> Int {
+        let vm = IntcodeVM()
+        vm.initialMemory = program
+        vm.memory[1] = noun
+        vm.memory[2] = verb
+        vm.run()
+        return vm.memory[0]
     }
 }
