@@ -15,17 +15,13 @@ final class Day05: AOCDay {
 
     func part1() -> Int {
         let vm = IntcodeVM()
-        vm.initialMemory = program
-        vm.inputs = [1]
-        vm.run()
-        return vm.outputs.last!
+        let outputs = vm.run(program: program, inputs: [1])
+        return outputs.last!
     }
 
     func part2() -> Int {
         let vm = IntcodeVM()
-        vm.initialMemory = program
-        vm.inputs = [5]
-        vm.run()
-        return vm.outputs.last!
+        let outputs = vm.run(program: program, inputs: [5])
+        return outputs.last!
     }
 }

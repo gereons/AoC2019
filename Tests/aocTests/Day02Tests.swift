@@ -5,8 +5,7 @@ final class Day02Tests: XCTestCase {
 
     private func runIntcode(_ input: [Int], resultIndex: Int = 0) -> Int {
         let vm = IntcodeVM()
-        vm.initialMemory = input
-        vm.run()
+        vm.run(program: input)
         return vm.memory[resultIndex]
     }
 

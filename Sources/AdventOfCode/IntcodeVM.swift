@@ -77,23 +77,29 @@ class IntcodeVM {
         }
     }
 
-    var initialMemory = [Int]() {
-        didSet {
-            let keysAndValues = initialMemory.enumerated().map { ($0.offset, $0.element) }
-            memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
-        }
-    }
-
-    var inputs = [Int]()
-    private(set) var outputs = [Int]()
+    private var inputs = [Int]()
+    private var outputs = [Int]()
     private(set) var memory = Memory()
 
     private var ic = 0 // input counter
     private var pc = 0 // program counter
     private var rBase = 0 // relative base
 
-    func run() {
-        guard !initialMemory.isEmpty else {
+    @discardableResult
+    func run(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> [Int] {
+        let keysAndValues = program.enumerated().map { ($0.offset, $0.element) }
+        memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
+
+        for (index, value) in patches {
+            memory[index] = value
+        }
+        self.inputs = inputs
+        run()
+        return outputs
+    }
+
+    private func run() {
+        guard !memory.storage.isEmpty else {
             fatalError("IntcodeVM: uninitialized memory")
         }
 

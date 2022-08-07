@@ -30,10 +30,7 @@ final class Day02: AOCDay {
 
     private func result(for noun: Int, _ verb: Int) -> Int {
         let vm = IntcodeVM()
-        vm.initialMemory = program
-        vm.memory[1] = noun
-        vm.memory[2] = verb
-        vm.run()
+        vm.run(program: program, patches: [1: noun, 2: verb])
         return vm.memory[0]
     }
 }
