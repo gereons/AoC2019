@@ -58,6 +58,11 @@ class IntcodeVM {
         let parameters: [Parameter]
     }
 
+    enum RunResult {
+        case end([Int])
+        case awaitingInput
+    }
+
     class Memory {
         fileprivate var storage = [Int: Int]()
 
@@ -84,9 +89,27 @@ class IntcodeVM {
     private var ic = 0 // input counter
     private var pc = 0 // program counter
     private var rBase = 0 // relative base
+    private var steps = 0 // instructions executed so far
+    private(set) var finished = false
+
+    let id: String
+    init(id: String = "") {
+        self.id = id
+    }
 
     @discardableResult
     func run(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> [Int] {
+        let result = start(program: program, inputs: inputs, patches: patches)
+        switch result {
+        case .end(let outputs):
+            return outputs
+        case .awaitingInput:
+            fatalError("use start()/continue()")
+        }
+    }
+
+    @discardableResult
+    func start(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> RunResult {
         let keysAndValues = program.enumerated().map { ($0.offset, $0.element) }
         memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
 
@@ -94,11 +117,31 @@ class IntcodeVM {
             memory[index] = value
         }
         self.inputs = inputs
-        run()
-        return outputs
+        return run()
     }
 
-    private func run() {
+    func `continue`(with inputs: [Int]) -> RunResult {
+        self.inputs.append(contentsOf: inputs)
+
+        let instruction = decodeInstruction()
+        if instruction.opcode != .input {
+            fatalError("not waiting for input...")
+        }
+        return execute()
+    }
+
+    func addInputs(_ inputs: [Int]) {
+        self.inputs.append(contentsOf: inputs)
+    }
+
+    func transferOutputs() -> [Int] {
+        let result = outputs
+        outputs = []
+        return result
+    }
+
+    @discardableResult
+    private func run() -> RunResult {
         guard !memory.storage.isEmpty else {
             fatalError("IntcodeVM: uninitialized memory")
         }
@@ -106,13 +149,36 @@ class IntcodeVM {
         pc = 0
         ic = 0
         rBase = 0
-        while let newPc = executeInstruction() {
-            pc = newPc
+        steps = 0
+        finished = false
+
+        return execute()
+    }
+
+    private func execute() -> RunResult {
+        while true {
+            let result = executeInstruction()
+            switch result {
+            case .end:
+                finished = true
+                return .end(outputs)
+            case .awaitingInput:
+                return .awaitingInput
+            case .newPc(let newPc):
+                pc = newPc
+            }
         }
     }
 
-    private func executeInstruction() -> Int? {
+    private enum ExecuteResult {
+        case end
+        case awaitingInput
+        case newPc(Int)
+    }
+
+    private func executeInstruction() -> ExecuteResult {
         let instruction = decodeInstruction()
+        steps += 1
 
         let p = instruction.parameters
         let opcode = instruction.opcode
@@ -123,16 +189,17 @@ class IntcodeVM {
         case .multiply:
             assign(p[2], rvalue(p[0]) * rvalue(p[1]))
         case .input:
-            assign(p[0], input())
+            guard let input = input() else { return .awaitingInput }
+            assign(p[0], input)
         case .output:
             output(rvalue(p[0]))
         case .jumpIfTrue:
             if rvalue(p[0]) != 0 {
-                return rvalue(p[1])
+                return .newPc(rvalue(p[1]))
             }
         case .jumpIfFalse:
             if rvalue(p[0]) == 0 {
-                return rvalue(p[1])
+                return .newPc(rvalue(p[1]))
             }
         case .lessThan:
             let result = rvalue(p[0]) < rvalue(p[1]) ? 1 : 0
@@ -143,9 +210,9 @@ class IntcodeVM {
         case .relativeBaseOffset:
             rBase += rvalue(p[0])
         case .end:
-            return nil
+            return .end
         }
-        return pc + 1 + opcode.parameters
+        return .newPc(pc + 1 + opcode.parameters)
     }
 
     private func assign(_ p: Parameter, _ newValue: Int) {
@@ -185,9 +252,9 @@ class IntcodeVM {
         return parameters
     }
 
-    private func input() -> Int {
+    private func input() -> Int? {
         guard ic < inputs.count else {
-            fatalError("no input available, ic=\(ic)")
+            return nil
         }
 
         defer { ic += 1}
