@@ -81,15 +81,6 @@ final class Day10: AOCDay {
         return visible
     }
 
-    private func gcd(_ m: Int, _ n: Int) -> Int {
-        let r = m % n
-        if r != 0 {
-            return gcd(n, r)
-        } else {
-            return n
-        }
-    }
-
     private func sign(_ x: Int) -> Int {
         if x < 0 { return -1 }
         if x > 0 { return 1 }
