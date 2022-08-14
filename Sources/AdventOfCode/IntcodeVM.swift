@@ -120,6 +120,10 @@ class IntcodeVM {
         return run()
     }
 
+    func `continue`(with input: Int) -> RunResult {
+        self.continue(with: [input])
+    }
+
     func `continue`(with inputs: [Int]) -> RunResult {
         self.inputs.append(contentsOf: inputs)
 
@@ -128,6 +132,10 @@ class IntcodeVM {
             fatalError("not waiting for input...")
         }
         return execute()
+    }
+
+    func addInput(_ input: Int) {
+        self.inputs.append(input)
     }
 
     func addInputs(_ inputs: [Int]) {
