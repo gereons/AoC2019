@@ -7,11 +7,11 @@
 import AoCTools
 import Foundation
 
-enum Component: CaseIterable {
+private enum Component: CaseIterable {
     case x, y, z
 }
 
-struct Moon: Hashable {
+private struct Moon: Hashable {
     var position: Point3
     var velocity = Point3.zero
 
@@ -57,7 +57,7 @@ final class Day12: AOCDay {
         return moons.reduce(0) { $0 + $1.energy }
     }
 
-    func simulateStep(_ moons: inout [Moon]) {
+    private func simulateStep(_ moons: inout [Moon]) {
         for i in 0..<moons.count {
             updateVelocity(index: i, in: &moons)
         }
@@ -67,7 +67,7 @@ final class Day12: AOCDay {
         }
     }
 
-    func updateVelocity(index: Int, in moons: inout [Moon]) {
+    private func updateVelocity(index: Int, in moons: inout [Moon]) {
         for (i, moon) in moons.enumerated() {
             if i == index { continue }
 
@@ -89,7 +89,7 @@ final class Day12: AOCDay {
         return lcm(result[0], lcm(result[1], result[2]))
     }
 
-    func findCycle(_ component: Component) -> Int {
+    private func findCycle(_ component: Component) -> Int {
         var moons = coordinates.map { Moon($0) }
         var seen = Set<[Int]>()
         var step = 0

@@ -87,6 +87,9 @@ final class Day13: AOCDay {
     func part2() -> Int {
         let game = IntcodeVM()
         let result = game.start(program: self.program, patches: [0: 2])
+        if case IntcodeVM.RunResult.end = result {
+            fatalError()
+        }
 
         var ball = Point.zero
         var paddle = Point.zero
