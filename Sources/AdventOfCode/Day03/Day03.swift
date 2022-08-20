@@ -6,7 +6,7 @@
 
 import AoCTools
 
-enum Direction {
+private enum Direction {
     case up(Int)
     case right(Int)
     case down(Int)
@@ -34,7 +34,7 @@ enum Direction {
 }
 
 final class Day03: AOCDay {
-    let wires: [[Direction]]
+    private let wires: [[Direction]]
 
     init(rawInput: String? = nil) {
         let input = rawInput ?? Self.rawInput

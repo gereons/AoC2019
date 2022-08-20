@@ -6,7 +6,7 @@
 
 import AoCTools
 
-enum Tile: Int {
+private enum Tile: Int {
     case empty
     case wall
     case block
@@ -41,7 +41,7 @@ final class Day13: AOCDay {
         return grid.values.filter { $0 == .block }.count
     }
 
-    func makeGrid(_ outputs: [Int]) -> [Point: Tile] {
+    private func makeGrid(_ outputs: [Int]) -> [Point: Tile] {
         var grid = [Point: Tile]()
         assert(outputs.count.isMultiple(of: 3))
         for chunk in outputs.chunked(3) {
@@ -52,7 +52,7 @@ final class Day13: AOCDay {
         return grid
     }
 
-    func makeGrid(_ outputs: [Int], _ ball: inout Point, _ paddle: inout Point, _ score: inout Int) -> [Point: Tile] {
+    private func makeGrid(_ outputs: [Int], _ ball: inout Point, _ paddle: inout Point, _ score: inout Int) -> [Point: Tile] {
         var grid = [Point: Tile]()
         assert(outputs.count.isMultiple(of: 3))
         for chunk in outputs.chunked(3) {
@@ -72,7 +72,7 @@ final class Day13: AOCDay {
         return grid
     }
 
-    func draw(_ grid: [Point: Tile]) {
+    private func draw(_ grid: [Point: Tile]) {
         let maxX = grid.keys.max { $0.x < $1.x }!.x
         let maxY = grid.keys.max { $0.y < $1.y }!.y
         for y in 0...maxY {
