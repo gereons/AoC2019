@@ -65,7 +65,7 @@ final class Day06: AOCDay {
         let start = tree.first { $0 == "YOU" }!.parent!
         let end = tree.first { $0 == "SAN" }!.parent!
 
-        let lca = tree.lowestCommonAncestor(start, end)
+        let lca = tree.lowestCommonAncestor(of: start, and: end)
 
         return tree.level(of: start)! + tree.level(of: end)! - 2 * tree.level(of: lca)!
     }

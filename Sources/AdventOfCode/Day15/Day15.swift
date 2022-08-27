@@ -141,7 +141,7 @@ private class Grid {
                 filled.append(contentsOf: neighbors)
             }
             minutes += 1
-            draw()
+            // draw()
         }
         return minutes
     }
@@ -174,7 +174,7 @@ final class Day15: AOCDay {
         let grid = Grid(program: self.program)
         let oxygen = grid.createMap()
 
-        let pathfinder = AStarPathfinder(grid: grid)
+        let pathfinder = AStarPathfinder(map: grid)
         let path = pathfinder.shortestPathFrom(.zero, to: oxygen)
 
         return path.count - 1
