@@ -53,113 +53,144 @@ private enum Tile: Drawable, Equatable {
     }
 }
 
-private struct Key {
+private struct Key: Hashable {
     let letter: String
     let point: Point
-    let distance: Int
+
+    static let none = Key(letter: "", point: .zero)
 }
 
-private struct Memo: Hashable {
-    let point: Point
-    let key: String
-    let ownedKeys: Set<String>
+private struct Keys: Hashable {
+    let from: Key
+    let to: Key
+}
+
+private struct Path {
+    let points: [Point]
+    let keysNeeded: Set<String>
+    let collectingKeys: Set<String>
+
+    var length: Int { points.count }
 }
 
 private class Vault {
     let grid: Grid<Tile>
     let entrance: Point
-    let keys: [Point: Tile]
+    let keys: [Key]
+    var paths = [Keys: Path]()
 
-    var points: [Point: Tile] {
-        grid.points
-    }
-
-    var visited = [Memo: [Point]]()
+    var points: [Point: Tile] { grid.points }
 
     init(grid: Grid<Tile>) {
         self.grid = grid
 
-        entrance = grid.points.first { $0.value == .entrance }!.key
-        keys = grid.points.filter { point, tile in
-            if case Tile.key = tile { return true }
-            return false
+        let entrance = grid.points.first { $0.value == .entrance }!.key
+        let keys: [Key] = grid.points.compactMap { point, tile in
+            guard case Tile.key(let letter) = tile else { return nil }
+            return Key(letter: letter, point: point)
         }
+
+        self.entrance = entrance
+        self.keys = keys
+
+        let paths = findAllPaths(between: keys, entrance: entrance)
+        self.paths = paths
     }
 
-    func moveToNextKey(from point: Point, to key: String,
+    private func findAllPaths(between keys: [Key], entrance: Point) -> [Keys: Path] {
+        var result = [Keys: Path]()
+
+        let entranceKey = Key(letter: "@", point: entrance)
+        for key1 in keys {
+            result[Keys(from: entranceKey, to: key1)] = pathFrom(entranceKey, to: key1)
+            for key2 in keys where key1 != key2 {
+                result[Keys(from: key1, to: key2)] = pathFrom(key1, to: key2)
+            }
+        }
+        return result
+    }
+
+    private func pathFrom(_ from: Key, to: Key) -> Path {
+        let pathfinder = AStarPathfinder(map: MazePathfinder(points: points))
+
+        let path = pathfinder.shortestPathFrom(from.point, to: to.point)
+        var keysNeeded = Set<String>()
+        var collectingKeys = Set<String>()
+        for p in path {
+            switch points[p] {
+            case .lock(let letter): keysNeeded.insert(letter.lowercased())
+            case .key(let letter): collectingKeys.insert(letter.lowercased())
+            default: ()
+            }
+        }
+
+        return Path(points: Array(path.dropFirst()), keysNeeded: keysNeeded, collectingKeys: collectingKeys)
+    }
+
+    private struct MemoKey: Hashable {
+        let from: String
+        let to: String
+        let availableKeys: Set<String>
+        let ownedKeys: Set<String>
+    }
+
+    private var memos = [MemoKey: Int]()
+    func moveToNextKey(from: Key,
                        availableKeys: Set<String>,
                        ownedKeys: Set<String>,
-                       distanceSoFar: Int,
-                       result: inout Int
-    ) {
+                       distance: Int
+    ) -> Int {
+        assert(availableKeys.intersection(ownedKeys).isEmpty)
+        assert(availableKeys.count + ownedKeys.count == keys.count)
         if availableKeys.isEmpty {
-            if distanceSoFar < result {
-                print(distanceSoFar)
-                result = distanceSoFar
-            }
-            return
+            return distance
         }
 
-        let vaultPathfinder = VaultPathfinder(vault: self, ownedKeys: ownedKeys)
-        let reachableKeys = vaultPathfinder.reachableKeys(from: point, visited: &visited)
-        // print(reachableKeys.map { $0.letter })
-        for targetKey in reachableKeys {
-            // print("move to", key.letter)
-            if distanceSoFar + targetKey.distance >= result {
-                continue
-            }
-
-            moveToNextKey(from: targetKey.point, to: targetKey.letter,
-                          availableKeys: availableKeys.subtracting([key]),
-                          ownedKeys: ownedKeys.union([key]),
-                          distanceSoFar: distanceSoFar + targetKey.distance,
-                          result: &result)
+        let targets = paths.filter { keys, path in
+            !ownedKeys.contains(keys.to.letter)
+                && keys.from.letter == from.letter
+                && path.keysNeeded.isSubset(of: ownedKeys)
         }
+
+        var nextDistance = Int.max
+        for (keys, path) in targets {
+            let nextAvailableKeys = availableKeys.subtracting(path.collectingKeys)
+            let nextOwnedKeys = ownedKeys.union(path.collectingKeys)
+
+            let memoKey = MemoKey(from: from.letter, to: keys.to.letter,
+                                  availableKeys: nextAvailableKeys,
+                                  ownedKeys: nextOwnedKeys)
+
+            if let distance = memos[memoKey] {
+                nextDistance = min(nextDistance, distance)
+            } else {
+                let distance = moveToNextKey(from: keys.to,
+                                             availableKeys: nextAvailableKeys,
+                                             ownedKeys: nextOwnedKeys,
+                                             distance: path.length)
+                nextDistance = min(nextDistance, distance)
+                memos[memoKey] = distance
+            }
+        }
+
+        return distance + nextDistance
     }
 }
 
-private struct VaultPathfinder: Pathfinding {
+private struct MazePathfinder: Pathfinding {
     let points: [Point: Tile]
-    let keys: [Point: Tile]
-    let ownedKeys: Set<String>
 
-    init(vault: Vault, ownedKeys: Set<String>) {
-        self.points = vault.points
-        self.keys = vault.keys
-        self.ownedKeys = ownedKeys
+    init(points: [Point: Tile]) {
+        self.points = points
     }
 
     func neighbors(for point: Point) -> [Point] {
         point.neighbors().filter { point in
             switch points[point] {
             case .none, .wall: return false
-            case .floor, .entrance, .key: return true
-            case .lock(let l): return ownedKeys.contains(l.lowercased())
+            case .floor, .entrance, .key, .lock: return true
             }
         }
-    }
-
-    func reachableKeys(from point: Point, visited: inout [Memo: [Point]]) -> [Key] {
-        var result = [Key]()
-        for key in keys {
-            guard let s = key.value.key else { continue }
-            if ownedKeys.contains(s) { continue }
-
-            let path: [Point]
-            let memo = Memo(point: point, key: s, ownedKeys: ownedKeys)
-            if let memoed = visited[memo] {
-                path = memoed
-            } else {
-                let pathfinder = AStarPathfinder(map: self)
-                path = pathfinder.shortestPathFrom(point, to: key.key)
-                visited[memo] = path
-            }
-
-            if !path.isEmpty {
-                result.append(Key(letter: s, point: key.key, distance: path.count - 1))
-            }
-        }
-        return result
     }
 }
 
@@ -173,14 +204,11 @@ final class Day18: AOCDay {
     func part1() -> Int {
         let vault = Vault(grid: grid)
 
-        let availableKeys = Set(vault.keys.values.compactMap { $0.key })
-        var result = Int.max
-        vault.moveToNextKey(from: vault.entrance, to: "",
-                            availableKeys: availableKeys,
-                            ownedKeys: [],
-                            distanceSoFar: 0,
-                            result: &result)
-
+        let allKeys = vault.keys.map { $0.letter }
+        let result = vault.moveToNextKey(from: Key(letter: "@", point: vault.entrance),
+                                         availableKeys: Set(allKeys),
+                                         ownedKeys: [],
+                                         distance: 0)
         return result
     }
 
