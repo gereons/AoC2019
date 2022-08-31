@@ -2,14 +2,6 @@ import XCTest
 @testable import AdventOfCode
 
 final class Day18Tests: XCTestCase {
-    func testDay18_1() throws {
-        try testDay18_1a()
-        try testDay18_1b()
-        try testDay18_1c()
-        try testDay18_1d()
-        try testDay18_1e()
-    }
-
     func testDay18_1a() throws {
         let input = """
         #########
@@ -71,13 +63,6 @@ final class Day18Tests: XCTestCase {
         """
         let day = Day18(rawInput: input)
         XCTAssertEqual(day.part1(), 81)
-    }
-
-    func testDay18_2() throws {
-        try testDay18_2a()
-        try testDay18_2b()
-        try testDay18_2c()
-        try testDay18_2d()
     }
 
     func testDay18_2a() throws {
