@@ -2,6 +2,14 @@ import XCTest
 @testable import AdventOfCode
 
 final class Day18Tests: XCTestCase {
+    func testDay18_1() throws {
+        try testDay18_1a()
+        try testDay18_1b()
+        try testDay18_1c()
+        try testDay18_1d()
+        try testDay18_1e()
+    }
+
     func testDay18_1a() throws {
         let input = """
         #########
@@ -66,7 +74,67 @@ final class Day18Tests: XCTestCase {
     }
 
     func testDay18_2() throws {
-        let day = Day18(rawInput: "bar")
-        XCTAssertEqual(day.part2(), 0)
+        try testDay18_2a()
+        try testDay18_2b()
+        try testDay18_2c()
+        try testDay18_2d()
+    }
+
+    func testDay18_2a() throws {
+        let input = """
+        #######
+        #a.#Cd#
+        ##@#@##
+        #######
+        ##@#@##
+        #cB#.b#
+        #######
+        """
+        let day = Day18(rawInput: input)
+        XCTAssertEqual(day.part2(), 8)
+    }
+
+    func testDay18_2b() throws {
+        let input = """
+        ###############
+        #d.ABC.#.....a#
+        ######@#@######
+        ###############
+        ######@#@######
+        #b.....#.....c#
+        ###############
+        """
+        let day = Day18(rawInput: input)
+        XCTAssertEqual(day.part2(), 24)
+    }
+
+    func testDay18_2c() throws {
+        let input = """
+        #############
+        #DcBa.#.GhKl#
+        #.###@#@#I###
+        #e#d#####j#k#
+        ###C#@#@###J#
+        #fEbA.#.FgHi#
+        #############
+        """
+        let day = Day18(rawInput: input)
+        XCTAssertEqual(day.part2(), 32)
+    }
+
+    func testDay18_2d() throws {
+        let input = """
+        #############
+        #g#f.D#..h#l#
+        #F###e#E###.#
+        #dCba@#@BcIJ#
+        #############
+        #nK.L@#@G...#
+        #M###N#H###.#
+        #o#m..#i#jk.#
+        #############
+        """
+        let day = Day18(rawInput: input)
+        XCTAssertEqual(day.part2(), 72)
     }
 }

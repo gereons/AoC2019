@@ -5,6 +5,7 @@
 //
 
 import AoCTools
+import Darwin
 
 private enum Tile: Drawable, Equatable {
     var draw: String {
@@ -75,8 +76,9 @@ private struct Path {
 
 private class Vault {
     let grid: Grid<Tile>
-    let entrance: Point
+    let entrances: [Point]
     let keys: [Key]
+    let locks: Set<String>
     var paths = [Keys: Path]()
 
     var points: [Point: Tile] { grid.points }
@@ -84,27 +86,41 @@ private class Vault {
     init(grid: Grid<Tile>) {
         self.grid = grid
 
-        let entrance = grid.points.first { $0.value == .entrance }!.key
+        let entrances = grid.points.filter { $0.value == .entrance }.map { $0.key }
         let keys: [Key] = grid.points.compactMap { point, tile in
             guard case Tile.key(let letter) = tile else { return nil }
             return Key(letter: letter, point: point)
         }
 
-        self.entrance = entrance
-        self.keys = keys
+        let locks: [String] = grid.points.compactMap { _, tile in
+            guard case Tile.lock(let letter) = tile else { return nil }
+            return letter
+        }
 
-        let paths = findAllPaths(between: keys, entrance: entrance)
+        self.entrances = entrances
+        self.keys = keys
+        self.locks = Set(locks)
+
+        let paths = findAllPaths(between: keys, entrances: entrances)
         self.paths = paths
     }
 
-    private func findAllPaths(between keys: [Key], entrance: Point) -> [Keys: Path] {
+    private func findAllPaths(between keys: [Key], entrances: [Point]) -> [Keys: Path] {
         var result = [Keys: Path]()
 
-        let entranceKey = Key(letter: "@", point: entrance)
+        let entranceKeys = entrances.map { Key(letter: "@", point: $0) }
         for key1 in keys {
-            result[Keys(from: entranceKey, to: key1)] = pathFrom(entranceKey, to: key1)
+            for entrance in entranceKeys {
+                let path = pathFrom(entrance, to: key1)
+                if path.length > 0 {
+                    result[Keys(from: entrance, to: key1)] = path
+                }
+            }
             for key2 in keys where key1 != key2 {
-                result[Keys(from: key1, to: key2)] = pathFrom(key1, to: key2)
+                let path = pathFrom(key1, to: key2)
+                if path.length > 0 {
+                    result[Keys(from: key1, to: key2)] = path
+                }
             }
         }
         return result
@@ -113,7 +129,7 @@ private class Vault {
     private func pathFrom(_ from: Key, to: Key) -> Path {
         let pathfinder = AStarPathfinder(map: MazePathfinder(points: points))
 
-        let path = pathfinder.shortestPathFrom(from.point, to: to.point)
+        let path = pathfinder.shortestPath(from: from.point, to: to.point)
         var keysNeeded = Set<String>()
         var collectingKeys = Set<String>()
         for p in path {
@@ -124,7 +140,7 @@ private class Vault {
             }
         }
 
-        return Path(points: Array(path.dropFirst()), keysNeeded: keysNeeded, collectingKeys: collectingKeys)
+        return Path(points: path, keysNeeded: keysNeeded, collectingKeys: collectingKeys)
     }
 
     private struct MemoKey: Hashable {
@@ -135,38 +151,56 @@ private class Vault {
     }
 
     private var memos = [MemoKey: Int]()
-    func moveToNextKey(from: Key,
+
+    func moveToNextKey(from: String,
                        availableKeys: Set<String>,
                        ownedKeys: Set<String>,
+                       currentPositions: Set<Point>,
                        distance: Int
     ) -> Int {
         assert(availableKeys.intersection(ownedKeys).isEmpty)
         assert(availableKeys.count + ownedKeys.count == keys.count)
+        assert(currentPositions.count == entrances.count)
         if availableKeys.isEmpty {
             return distance
         }
 
-        let targets = paths.filter { keys, path in
-            !ownedKeys.contains(keys.to.letter)
-                && keys.from.letter == from.letter
+        let targets: [Keys: Path]
+//        if entrances.count == 1 {
+//            targets = paths.filter { keys, path in
+//                !ownedKeys.contains(keys.to.letter)
+//                    && keys.from.letter == from
+//                    && path.keysNeeded.isSubset(of: ownedKeys)
+//            }
+//        } else {
+//            assert(entrances.count == 4)
+            targets = paths.filter { keys, path in
+                currentPositions.contains(keys.from.point)
+                && !path.collectingKeys.subtracting(ownedKeys).intersection(availableKeys).isEmpty
                 && path.keysNeeded.isSubset(of: ownedKeys)
-        }
+            }
+//        }
 
         var nextDistance = Int.max
         for (keys, path) in targets {
             let nextAvailableKeys = availableKeys.subtracting(path.collectingKeys)
             let nextOwnedKeys = ownedKeys.union(path.collectingKeys)
+            var nextPositions = currentPositions
+            nextPositions.remove(keys.from.point)
+            nextPositions.insert(keys.to.point)
 
-            let memoKey = MemoKey(from: from.letter, to: keys.to.letter,
+            assert(from == keys.from.letter)
+            let memoKey = MemoKey(from: from, to: keys.to.letter,
                                   availableKeys: nextAvailableKeys,
                                   ownedKeys: nextOwnedKeys)
 
             if let distance = memos[memoKey] {
                 nextDistance = min(nextDistance, distance)
             } else {
-                let distance = moveToNextKey(from: keys.to,
+                let distance = moveToNextKey(from: keys.to.letter,
                                              availableKeys: nextAvailableKeys,
                                              ownedKeys: nextOwnedKeys,
+                                             currentPositions: nextPositions,
                                              distance: path.length)
                 nextDistance = min(nextDistance, distance)
                 memos[memoKey] = distance
@@ -205,14 +239,43 @@ final class Day18: AOCDay {
         let vault = Vault(grid: grid)
 
         let allKeys = vault.keys.map { $0.letter }
-        let result = vault.moveToNextKey(from: Key(letter: "@", point: vault.entrance),
+        let result = vault.moveToNextKey(from: "@",
                                          availableKeys: Set(allKeys),
                                          ownedKeys: [],
+                                         currentPositions: Set(vault.entrances),
                                          distance: 0)
         return result
     }
 
     func part2() -> Int {
-        return 0
+        let grid = checkEntrances(in: grid)
+        let vault = Vault(grid: grid)
+        let allKeys = vault.keys.map { $0.letter }
+        let result = vault.moveToNextKey(from: "@",
+                                         availableKeys: Set(allKeys),
+                                         ownedKeys: [],
+                                         currentPositions: Set(vault.entrances),
+                                         distance: 0)
+
+        return result
+    }
+
+    private func checkEntrances(in grid: Grid<Tile>) -> Grid<Tile> {
+        let entrances = grid.points.filter { $0.value == .entrance }
+        if entrances.count == 4 {
+            return grid
+        }
+        assert(entrances.count == 1)
+        var points = grid.points
+
+        let entrance = entrances.first!.key
+        points[entrance] = .wall
+        for p in entrance.neighbors() {
+            points[p] = .wall
+        }
+        for p in entrance.neighbors(adjacency: .diagonal) {
+            points[p] = .entrance
+        }
+        return Grid(points: points)
     }
 }

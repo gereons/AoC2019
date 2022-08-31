@@ -175,7 +175,7 @@ final class Day15: AOCDay {
         let oxygen = grid.createMap()
 
         let pathfinder = AStarPathfinder(map: grid)
-        let path = pathfinder.shortestPathFrom(.zero, to: oxygen)
+        let path = pathfinder.shortestPath(from: .zero, to: oxygen)
 
         return path.count - 1
     }
