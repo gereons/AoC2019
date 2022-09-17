@@ -95,6 +95,7 @@ private class Vault {
         self.keys = keys
 
         let paths = findAllPaths(between: keys, entrances: entrances)
+        assert(paths.values.allSatisfy { $0.length > 0 })
         self.paths = paths
     }
 
@@ -137,9 +138,7 @@ private class Vault {
     }
 
     private struct MemoKey: Hashable {
-        let from: Point
-        let to: Point
-        let availableKeys: Set<String>
+        let starts: Set<Point>
         let ownedKeys: Set<String>
     }
 
@@ -168,8 +167,13 @@ private class Vault {
         }
         assert(!targets.isEmpty)
 
+        let memoKey = MemoKey(starts: positions, ownedKeys: ownedKeys)
+        if let distance = memos[memoKey] {
+            return distance
+        }
+
         var nextDistance = Int.max
-        for (keys, path) in targets {
+        for (keys, path) in targets.shuffled() {
             assert(path.keysNeeded.isSubset(of: ownedKeys))
             assert(!availableKeys.contains(keys.from.letter))
             assert(availableKeys.contains(keys.to.letter))
@@ -186,21 +190,16 @@ private class Vault {
             assert(nextOwnedKeys.contains(keys.to.letter))
             assert(!nextAvailableKeys.contains(keys.to.letter))
 
-            let memoKey = MemoKey(from: keys.from.point,
-                                  to: keys.to.point,
-                                  availableKeys: nextAvailableKeys,
-                                  ownedKeys: nextOwnedKeys)
+            let s = "\(keys.from.letter) \(keys.to.letter)"
 
-            if let distance = memos[memoKey] {
-                nextDistance = min(nextDistance, distance)
-            } else {
-                let distance = moveToNextKey(from: nextPositions,
-                                             availableKeys: nextAvailableKeys,
-                                             ownedKeys: nextOwnedKeys,
-                                             visited: nextVisited,
-                                             distance: path.length)
+            let distance = moveToNextKey(from: nextPositions,
+                                         availableKeys: nextAvailableKeys,
+                                         ownedKeys: nextOwnedKeys,
+                                         visited: nextVisited,
+                                         distance: path.length)
+            if distance < nextDistance {
+                nextDistance = distance
                 memos[memoKey] = distance
-                nextDistance = min(nextDistance, distance)
             }
         }
 
@@ -215,7 +214,7 @@ private struct MazePathfinder: Pathfinding {
         self.points = points
     }
 
-    func neighbors(for point: Point) -> [Point] {
+    func neighbors(for point: Point, node: Node) -> [Point] {
         point.neighbors().filter { point in
             switch points[point] {
             case .none, .wall: return false
@@ -224,6 +223,7 @@ private struct MazePathfinder: Pathfinding {
         }
     }
 }
+
 
 final class Day18: AOCDay {
     private let grid: Grid<Tile>
