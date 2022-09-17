@@ -42,6 +42,13 @@ private enum Tile: Drawable, Equatable {
         }
     }
 
+    var lock: String? {
+        switch self {
+        case .lock(let lock): return lock
+        default: return nil
+        }
+    }
+
     static func == (lhs: Tile, rhs: Tile) -> Bool {
         switch (lhs, rhs) {
         case (.wall, .wall): return true
@@ -57,8 +64,6 @@ private enum Tile: Drawable, Equatable {
 private struct Key: Hashable {
     let letter: String
     let point: Point
-
-    static let none = Key(letter: "", point: .zero)
 }
 
 private struct Keys: Hashable {
@@ -121,7 +126,7 @@ private class Vault {
     }
 
     private func pathFrom(_ from: Key, to: Key) -> Path {
-        let pathfinder = AStarPathfinder(map: MazePathfinder(points: points))
+        let pathfinder = AStarPathfinder(map: self)
 
         let path = pathfinder.shortestPath(from: from.point, to: to.point)
         var keysNeeded = Set<String>()
@@ -130,90 +135,16 @@ private class Vault {
             switch points[p] {
             case .lock(let letter): keysNeeded.insert(letter.lowercased())
             case .key(let letter): collectingKeys.insert(letter.lowercased())
+            case .wall: fatalError()
             default: ()
             }
         }
 
         return Path(points: path, keysNeeded: keysNeeded, collectingKeys: collectingKeys)
     }
-
-    private struct MemoKey: Hashable {
-        let starts: Set<Point>
-        let ownedKeys: Set<String>
-    }
-
-    private var memos = [MemoKey: Int]()
-
-    func moveToNextKey(from positions: Set<Point>,
-                       availableKeys: Set<String>,
-                       ownedKeys: Set<String>,
-                       visited: Set<Path>,
-                       distance: Int
-    ) -> Int {
-        assert(positions.count == entrances.count)
-        assert(availableKeys.intersection(ownedKeys).isEmpty)
-        assert(availableKeys.count + ownedKeys.count == keys.count)
-
-        if availableKeys.isEmpty {
-            return distance
-        }
-
-        let targets = paths.filter { keys, path in
-            positions.contains(keys.from.point)
-            && !visited.contains(path)
-            && path.keysNeeded.isSubset(of: ownedKeys)
-            && !availableKeys.contains(keys.from.letter)
-            && availableKeys.contains(keys.to.letter)
-        }
-        assert(!targets.isEmpty)
-
-        let memoKey = MemoKey(starts: positions, ownedKeys: ownedKeys)
-        if let distance = memos[memoKey] {
-            return distance
-        }
-
-        var nextDistance = Int.max
-        for (keys, path) in targets.shuffled() {
-            assert(path.keysNeeded.isSubset(of: ownedKeys))
-            assert(!availableKeys.contains(keys.from.letter))
-            assert(availableKeys.contains(keys.to.letter))
-            if keys.from.letter != "@" {
-                assert(ownedKeys.contains(keys.from.letter))
-            }
-            assert(!ownedKeys.contains(keys.to.letter))
-
-            let nextAvailableKeys = availableKeys.subtracting(path.collectingKeys)
-            let nextOwnedKeys = ownedKeys.union(path.collectingKeys)
-            let nextPositions = positions.subtracting([keys.from.point]).union([keys.to.point])
-            let nextVisited = visited.union([path])
-
-            assert(nextOwnedKeys.contains(keys.to.letter))
-            assert(!nextAvailableKeys.contains(keys.to.letter))
-
-            let s = "\(keys.from.letter) \(keys.to.letter)"
-
-            let distance = moveToNextKey(from: nextPositions,
-                                         availableKeys: nextAvailableKeys,
-                                         ownedKeys: nextOwnedKeys,
-                                         visited: nextVisited,
-                                         distance: path.length)
-            if distance < nextDistance {
-                nextDistance = distance
-                memos[memoKey] = distance
-            }
-        }
-
-        return distance + nextDistance
-    }
 }
 
-private struct MazePathfinder: Pathfinding {
-    let points: [Point: Tile]
-
-    init(points: [Point: Tile]) {
-        self.points = points
-    }
-
+extension Vault: Pathfinding {
     func neighbors(for point: Point, node: Node) -> [Point] {
         point.neighbors().filter { point in
             switch points[point] {
@@ -221,6 +152,90 @@ private struct MazePathfinder: Pathfinding {
             case .floor, .entrance, .key, .lock: return true
             }
         }
+    }
+}
+
+extension Vault {
+
+    private struct MemoKey: Hashable {
+        let points: Set<Point>
+        let keys: Set<String>
+    }
+
+    func minimumSteps(from: Set<Point>) -> Int {
+        var seen = [MemoKey: Int]()
+        return minimumSteps(from: from, haveKeys: [], seen: &seen)
+    }
+
+    private func minimumSteps(from: Set<Point>,
+                              haveKeys: Set<String>,
+                              seen: inout [MemoKey: Int]
+    ) -> Int {
+        let state = MemoKey(points: from, keys: haveKeys)
+        if let distance = seen[state] {
+            return distance
+        }
+
+        let distances = findReachable(from: from, haveKeys).map {
+            let at = $0.value.at
+            let distance = $0.value.distance
+            let cause = $0.value.cause
+            return distance + minimumSteps(from: from - cause + at, haveKeys: haveKeys + $0.key, seen: &seen)
+        }
+        let answer = distances.min(by: <) ?? 0
+        seen[state] = answer
+        return answer
+    }
+
+    private struct ReachableKey {
+        let at: Point
+        let distance: Int
+        let cause: Point
+    }
+
+    private func findReachable(from: Set<Point>, _ haveKeys: Set<String>) -> [String: ReachableKey] {
+        let array = from
+            .map { point in
+                findReachableKeys(from: point, haveKeys: haveKeys).map {
+                    ($0.key, ReachableKey(at: $0.value.point, distance: $0.value.distance, cause: point))
+                }
+            }
+            .flatMap { $0 }
+        return Dictionary(uniqueKeysWithValues: array)
+    }
+
+    private struct KeyDistance {
+        let point: Point
+        let distance: Int
+    }
+
+    private func findReachableKeys(from point: Point, haveKeys: Set<String>) -> [String: KeyDistance] {
+        var queue = Queue<Point>()
+        queue.push(point)
+
+        var distance = [point: 0]
+        var keyDistance = [String: KeyDistance]()
+
+        while !queue.isEmpty {
+            let next = queue.pop()
+            next.neighbors()
+                .filter { points[$0] != .wall }
+                .filter { distance[$0] == nil }
+                .forEach { point in
+                    distance[point] = distance[next]! + 1
+
+                    let lock = points[point]?.lock
+                    let key = points[point]?.key
+                    if lock == nil || haveKeys.contains(lock?.lowercased() ?? "") {
+                        if let key = key, !haveKeys.contains(key) {
+                            keyDistance[key] = KeyDistance(point: point, distance: distance[point]!)
+                        } else {
+                            queue.push(point)
+                        }
+                    }
+                }
+        }
+        return keyDistance
     }
 }
 
@@ -234,25 +249,14 @@ final class Day18: AOCDay {
 
     func part1() -> Int {
         let vault = Vault(grid: grid)
-
-        let allKeys = vault.keys.map { $0.letter }
-        let distance = vault.moveToNextKey(from: Set(vault.entrances),
-                                           availableKeys: Set(allKeys),
-                                           ownedKeys: [],
-                                           visited: [],
-                                           distance: 0)
+        let distance = vault.minimumSteps(from: Set(vault.entrances))
         return distance
     }
 
     func part2() -> Int {
         let grid = checkEntrances(in: grid)
         let vault = Vault(grid: grid)
-        let allKeys = vault.keys.map { $0.letter }
-        let distance = vault.moveToNextKey(from: Set(vault.entrances),
-                                           availableKeys: Set(allKeys),
-                                           ownedKeys: [],
-                                           visited: [],
-                                           distance: 0)
+        let distance = vault.minimumSteps(from: Set(vault.entrances))
         return distance
     }
 
