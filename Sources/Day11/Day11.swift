@@ -30,7 +30,7 @@ final class Day11: AOCDay {
             let result = robot.continue(with: grid[position, default: 0])
             switch result {
             case .awaitingInput:
-                let outputs = robot.transferOutputs()
+                let outputs = robot.consumeOutput()
                 grid[position] = outputs[0]
                 let turn = outputs[1] == 0 ? Point.Turn.counterclockwise : .clockwise
                 direction = direction.turned(turn)

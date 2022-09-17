@@ -58,7 +58,7 @@ class IntcodeVM {
         let parameters: [Parameter]
     }
 
-    enum RunResult {
+    enum RunResult: Equatable {
         case end([Int])
         case awaitingInput
     }
@@ -142,7 +142,7 @@ class IntcodeVM {
         self.inputs.append(contentsOf: inputs)
     }
 
-    func transferOutputs() -> [Int] {
+    func consumeOutput() -> [Int] {
         let result = outputs
         outputs = []
         return result

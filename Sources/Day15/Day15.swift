@@ -48,7 +48,7 @@ private class Grid {
             switch result {
             case .end: fatalError()
             case .awaitingInput:
-                let output = droid.transferOutputs()
+                let output = droid.consumeOutput()
                 assert(output.count==1)
                 let tile = Tile(rawValue: output[0])!
                 switch tile {

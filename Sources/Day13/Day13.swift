@@ -35,7 +35,7 @@ final class Day13: AOCDay {
         let game = IntcodeVM()
         game.run(program: self.program)
 
-        let outputs = game.transferOutputs()
+        let outputs = game.consumeOutput()
         let grid = makeGrid(outputs)
 
         return grid.values.filter { $0 == .block }.count
@@ -94,7 +94,7 @@ final class Day13: AOCDay {
         var ball = Point.zero
         var paddle = Point.zero
         var score = 0
-        var grid = makeGrid(game.transferOutputs(), &ball, &paddle, &score)
+        var grid = makeGrid(game.consumeOutput(), &ball, &paddle, &score)
         while true {
             var joystick = 0
             if ball.x > paddle.x {
@@ -106,7 +106,7 @@ final class Day13: AOCDay {
             let result = game.continue(with: joystick)
             grid[ball] = nil
             grid[paddle] = nil
-            _ = makeGrid(game.transferOutputs(), &ball, &paddle, &score)
+            _ = makeGrid(game.consumeOutput(), &ball, &paddle, &score)
             grid[ball] = .ball
             grid[paddle] = .paddle
             if case IntcodeVM.RunResult.end = result {

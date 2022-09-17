@@ -65,7 +65,7 @@ final class Day07: AOCDay {
             let result = amp.continue(with: [])
             switch result {
             case .awaitingInput:
-                let outputs = amp.transferOutputs()
+                let outputs = amp.consumeOutput()
                 nextAmp.addInputs(outputs)
             case .end(let outputs):
                 nextAmp.addInputs(outputs)
