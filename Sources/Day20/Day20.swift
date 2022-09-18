@@ -103,7 +103,7 @@ private class Maze {
 }
 
 extension Maze: Pathfinding {
-    func neighbors(for point: Point, node: Node) -> [Point] {
+    func neighbors(for point: Point) -> [Point] {
         var neighbors = point.neighbors().filter { points[$0]?.isFloor == true }
         if let connect = connections[point] {
             neighbors.append(connect)

@@ -145,7 +145,7 @@ private class Vault {
 }
 
 extension Vault: Pathfinding {
-    func neighbors(for point: Point, node: Node) -> [Point] {
+    func neighbors(for point: Point) -> [Point] {
         point.neighbors().filter { point in
             switch points[point] {
             case .none, .wall: return false
