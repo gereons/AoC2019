@@ -1,16 +1,23 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AoCTools",
-        "repositoryURL": "https://github.com/gereons/AoCTools",
-        "state": {
-          "branch": null,
-          "revision": "91d5967fbc35af2c391aca05b483692d2307598c",
-          "version": "0.0.26"
-        }
+  "pins" : [
+    {
+      "identity" : "aoctools",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gereons/AoCTools",
+      "state" : {
+        "revision" : "91d5967fbc35af2c391aca05b483692d2307598c",
+        "version" : "0.0.26"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "bigint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/attaswift/BigInt",
+      "state" : {
+        "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
+        "version" : "5.3.0"
+      }
+    }
+  ],
+  "version" : 2
 }

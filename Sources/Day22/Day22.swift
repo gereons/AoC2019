@@ -5,6 +5,7 @@
 //
 
 import AoCTools
+import BigInt
 
 private enum Shuffle {
     case newStack // deal into new stack
@@ -73,7 +74,44 @@ final class Day22: AOCDay {
         }
     }
 
-    func part2() -> Int {
-        return 0
+    private func perform(_ shuffle: Shuffle, input: inout [BigInt], deckSize: BigInt) {
+        switch shuffle {
+        case .newStack:
+            input[0] = -input[0]
+            input[1] = -(input[1] + 1)
+        case .cut(let depth):
+            input[1] += BigInt(depth)
+        case .dealIncrement(let inc):
+            let p = BigInt(inc).power(deckSize - 2, modulus: deckSize)
+            for i in 0..<input.count {
+                input[i] *= p
+            }
+        }
+    }
+
+    // based on
+    // https://github.com/SimonBaars/AdventOfCode-Java/blob/0d7b48795ee181d0fc639250b60986842088684f/src/main/java/com/sbaars/adventofcode2019/days/Day22.java
+    // no way would i have figured this out myself...
+    
+    func part2() -> BigInt {
+        seekPosition(deckSize: 119315717514047,
+                     timesShuffled: 101741582076661,
+                     position: 2020)
+    }
+
+    private func seekPosition(deckSize: BigInt, timesShuffled: BigInt, position: BigInt) -> BigInt {
+        var memory: [BigInt] = [1, 0]
+        for shuffle in shuffles.reversed() {
+            perform(shuffle, input: &memory, deckSize: deckSize)
+            for i in 0..<memory.count {
+                memory[i] %= deckSize
+            }
+        }
+
+        let power = memory[0].power(timesShuffled, modulus: deckSize)
+        let p1 = power * position
+        let p2 = memory[1] * (power + deckSize - 1)
+        let p3 = (memory[0] - 1).power(deckSize - 2, modulus: deckSize)
+        return (p1 + p2 * p3) % deckSize
     }
 }
