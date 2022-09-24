@@ -63,18 +63,14 @@ final class IntcodeVM {
     final class Memory {
         fileprivate var storage = [Int: Int]()
 
-        subscript(_ index: Int) -> Int {
+        subscript(_ address: Int) -> Int {
             get {
-                guard index >= 0 else {
-                    fatalError("get invalid address \(index)")
-                }
-                return storage[index, default: 0]
+                assert(address >= 0)
+                return storage[address, default: 0]
             }
-            set(newValue) {
-                guard index >= 0 else {
-                    fatalError("set invalid address \(index)")
-                }
-                storage[index] = newValue
+            set {
+                assert(address >= 0)
+                storage[address] = newValue
             }
         }
     }
@@ -271,7 +267,9 @@ final class IntcodeVM {
     }
 
     private func decodeInstruction(at address: Int) -> Instruction {
-        let (modes, opcode) = memory[address].quotientAndRemainder(dividingBy: 100)
+        let value = memory[address]
+        assert(value > 0 && value < 100_000)
+        let (modes, opcode) = value.quotientAndRemainder(dividingBy: 100)
         guard let opcode = Opcode(rawValue: opcode) else {
             fatalError("invalid opcode \(memory[address]) at \(address)")
         }
