@@ -23,7 +23,7 @@ final class Day09Tests: XCTestCase {
         let vm = IntcodeVM()
         let outputs = vm.run(program: program)
 
-        XCTAssertEqual(outputs, [1125899906842624])
+        XCTAssertEqual(outputs[0], program[1])
     }
 
 }

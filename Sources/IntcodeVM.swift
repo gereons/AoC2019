@@ -89,15 +89,20 @@ class IntcodeVM {
     private var ic = 0 // input counter
     private var pc = 0 // program counter
     private var rBase = 0 // relative base
-    private var steps = 0 // instructions executed so far
-    private(set) var finished = false
+    private(set) var steps = 0 // instructions executed so far
+    private var finished = false
 
     let id: String
     init(id: String = "") {
         self.id = id
     }
 
-    @discardableResult
+    /// Run an intcode program. All necessary input must be provided up-front
+    /// - Parameters:
+    ///   - program: the intcode program itself
+    ///   - inputs: initial inputs
+    ///   - patches: initial memory patches
+    /// - Returns: the produced outputs
     func run(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> [Int] {
         let result = start(program: program, inputs: inputs, patches: patches)
         switch result {
@@ -108,7 +113,13 @@ class IntcodeVM {
         }
     }
 
-    @discardableResult
+    /// Start an intcode program and run it until it either terminates or reaches an input instruction
+    /// with an empty input buffer.
+    /// - Parameters:
+    ///   - program: the intcode program itself
+    ///   - inputs: initial inputs
+    ///   - patches: initial memory patches
+    /// - Returns: the reason for stopping
     func start(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> RunResult {
         let keysAndValues = program.enumerated().map { ($0.offset, $0.element) }
         memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
@@ -120,12 +131,18 @@ class IntcodeVM {
         return run()
     }
 
+    /// Continue running a program that was previously stopped at an input instruction
+    /// - Parameter input: the input
+    /// - Returns: the reason for stopping
     func `continue`(with input: Int) -> RunResult {
         self.continue(with: [input])
     }
 
+    /// Continue running a program that was previously stopped at an input instruction
+    /// - Parameter inputs: the inputs
+    /// - Returns: the reason for stopping
     func `continue`(with inputs: [Int]) -> RunResult {
-        self.inputs.append(contentsOf: inputs)
+        addInput(inputs)
 
         let instruction = decodeInstruction()
         if instruction.opcode != .input {
@@ -134,21 +151,25 @@ class IntcodeVM {
         return execute()
     }
 
+    /// Add input data, but don't continue execution
+    /// - Parameter input: input data
     func addInput(_ input: Int) {
-        self.inputs.append(input)
+        inputs.append(input)
     }
 
-    func addInputs(_ inputs: [Int]) {
+    /// Add input data, but don't continue execution
+    /// - Parameter inputs: input data
+    func addInput(_ inputs: [Int]) {
         self.inputs.append(contentsOf: inputs)
     }
 
+    /// Get output data accumulated so far and clear the VM's output buffer
+    /// - Returns: output accumulated so far
     func consumeOutput() -> [Int] {
-        let result = outputs
-        outputs = []
-        return result
+        defer { outputs = [] }
+        return outputs
     }
 
-    @discardableResult
     private func run() -> RunResult {
         guard !memory.storage.isEmpty else {
             fatalError("IntcodeVM: uninitialized memory")
@@ -197,7 +218,9 @@ class IntcodeVM {
         case .multiply:
             assign(p[2], rvalue(p[0]) * rvalue(p[1]))
         case .input:
-            guard let input = input() else { return .awaitingInput }
+            guard let input = input() else {
+                return .awaitingInput
+            }
             assign(p[0], input)
         case .output:
             output(rvalue(p[0]))
@@ -261,12 +284,12 @@ class IntcodeVM {
     }
 
     private func input() -> Int? {
-        guard ic < inputs.count else {
+        guard let input = inputs.first else {
             return nil
         }
 
-        defer { ic += 1}
-        return inputs[ic]
+        inputs.remove(at: 0)
+        return input
     }
 
     private func output(_ n: Int) {

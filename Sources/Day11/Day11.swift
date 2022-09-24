@@ -21,12 +21,13 @@ final class Day11: AOCDay {
 
     func paint(_ grid: inout [Point: Int]) {
         let robot = IntcodeVM()
-        robot.start(program: program)
+        let status = robot.start(program: program)
+        assert(status == .awaitingInput)
 
         var position = Point.zero
         var direction = Point.Direction.n
 
-        while !robot.finished {
+        while true {
             let result = robot.continue(with: grid[position, default: 0])
             switch result {
             case .awaitingInput:

@@ -37,9 +37,7 @@ final class Day21: AOCDay {
         WALK\n
         """
 
-        vm.start(program: program, inputs: springscript.ascii)
-        let output = vm.consumeOutput()
-
+        let output = vm.run(program: program, inputs: springscript.ascii)
         print(String(ints: output.filter { $0 < 256 }))
 
         return output.filter { $0 > 255}.first ?? 0
@@ -64,9 +62,7 @@ final class Day21: AOCDay {
         RUN\n
         """
 
-        vm.start(program: program, inputs: springscript.ascii)
-        let output = vm.consumeOutput()
-
+        let output = vm.run(program: program, inputs: springscript.ascii)
         print(String(ints: output.filter { $0 < 256 }))
 
         return output.filter { $0 > 255}.first ?? 0

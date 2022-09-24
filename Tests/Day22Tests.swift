@@ -48,9 +48,4 @@ final class Day22Tests: XCTestCase {
         XCTAssertEqual(day.part1(), 0)
         XCTAssertEqual(day.deck, [9, 2, 5, 8, 1, 4, 7, 0, 3, 6])
     }
-
-//    func testDay22_2() throws {
-//        let day = Day22(rawInput: "bar")
-//        XCTAssertEqual(day.part2(), 0)
-//    }
 }

@@ -33,7 +33,8 @@ private class Grid {
 
     init(program: [Int]) {
         droid = IntcodeVM()
-        droid.start(program: program)
+        let status = droid.start(program: program)
+        assert(status == .awaitingInput)
     }
 
     func createMap() -> Point {

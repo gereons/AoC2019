@@ -33,9 +33,7 @@ final class Day13: AOCDay {
 
     func part1() -> Int {
         let game = IntcodeVM()
-        game.run(program: self.program)
-
-        let outputs = game.consumeOutput()
+        let outputs = game.run(program: self.program)
         let grid = makeGrid(outputs)
 
         return grid.values.filter { $0 == .block }.count

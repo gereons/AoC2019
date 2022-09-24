@@ -40,17 +40,12 @@ final class Day07: AOCDay {
     }
 
     func thrusterSignalFeedback(program: [Int], phaseSetting: [Int]) -> Int {
-        var id = 0
         var firstInput = [0]
-        let amps = phaseSetting.map { phase -> IntcodeVM in
-            let vm = IntcodeVM(id: "\(UnicodeScalar(65 + id)!)")
-            id += 1
+        let amps = phaseSetting.enumerated().map { index, phase in
+            let vm = IntcodeVM(id: "\(index)")
             let result = vm.start(program: program, inputs: [phase] + firstInput)
             firstInput = []
-            switch result {
-            case .awaitingInput: ()
-            case .end: fatalError()
-            }
+            assert(result == .awaitingInput)
             return vm
         }
 
@@ -66,9 +61,9 @@ final class Day07: AOCDay {
             switch result {
             case .awaitingInput:
                 let outputs = amp.consumeOutput()
-                nextAmp.addInputs(outputs)
+                nextAmp.addInput(outputs)
             case .end(let outputs):
-                nextAmp.addInputs(outputs)
+                nextAmp.addInput(outputs)
                 lastOutput = outputs.last ?? 0
                 done += 1
             }
