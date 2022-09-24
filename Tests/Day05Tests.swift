@@ -4,8 +4,8 @@ import XCTest
 final class Day05Tests: XCTestCase {
     func testDay05_1a() throws {
         let vm = IntcodeVM()
-        let outputs = vm.run(program: [3,0,4,0,99], inputs: [99])
-        XCTAssertEqual(outputs, [99])
+        let outputs = vm.run(program: [3,0,4,0,99], inputs: [199])
+        XCTAssertEqual(outputs, [199])
     }
 
     func testDay05_1b() throws {
@@ -14,14 +14,12 @@ final class Day05Tests: XCTestCase {
         XCTAssertEqual(vm.memory[4], 99)
     }
 
-    /*
+    func testDay05_1c() throws {
+        let vm = IntcodeVM()
+        let _ = vm.run(program: [1101,100,-1,4,0], inputs: [])
+        XCTAssertEqual(vm.memory[4], 99)
+    }
 
-
-
-
-
-
-     */
     func testDay05_2a() throws {
         // 3,9,8,9,10,9,4,9,99,-1,8 - Using position mode, consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not).
         let o1 = IntcodeVM().run(program: [3,9,8,9,10,9,4,9,99,-1,8], inputs: [8])
@@ -86,11 +84,11 @@ final class Day05Tests: XCTestCase {
         999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99]
         // The above example program uses an input instruction to ask for a single number. The program will then output 999 if the input value is below 8, output 1000 if the input value is equal to 8, or output 1001 if the input value is greater than 8.
 
-        let o1 = IntcodeVM().run(program: program, inputs: [0])
+        let o1 = IntcodeVM().run(program: program, inputs: [-1000])
         XCTAssertEqual(o1[0], 999)
         let o2 = IntcodeVM().run(program: program, inputs: [8])
         XCTAssertEqual(o2[0], 1000)
-        let o3 = IntcodeVM().run(program: program, inputs: [9])
+        let o3 = IntcodeVM().run(program: program, inputs: [999])
         XCTAssertEqual(o3[0], 1001)
     }
 }

@@ -57,16 +57,6 @@ final class Day23: AOCDay {
         var idleLoops = 0
         while true {
             var allIdle = true
-            for i in 0..<50 {
-                if let inputs = queue.removeValue(forKey: i) {
-                    allIdle = false
-                    let status = nics[i].continue(with: inputs)
-                    assert(status == .awaitingInput)
-                } else {
-                    let status = nics[i].continue(with: [-1])
-                    assert(status == .awaitingInput)
-                }
-            }
 
             for i in 0..<50 {
                 let output = nics[i].consumeOutput()
@@ -78,10 +68,23 @@ final class Day23: AOCDay {
                         if !nat.isEmpty && packet[1] == nat[1] {
                             return nat[1]
                         }
+                        print("store nat", packet)
                         nat = packet
                     } else {
+                        print(i, "send", packet, "to", target)
                         queue[target, default: []].append(contentsOf: packet)
                     }
+                }
+            }
+
+            for i in 0..<50 {
+                if let inputs = queue.removeValue(forKey: i) {
+                    allIdle = false
+                    let status = nics[i].continue(with: inputs)
+                    assert(status == .awaitingInput)
+                } else {
+                    let status = nics[i].continue(with: [-1])
+                    assert(status == .awaitingInput)
                 }
             }
 
@@ -92,6 +95,7 @@ final class Day23: AOCDay {
             }
 
             if idleLoops == 100 && !nat.isEmpty {
+                print("send nat", nat)
                 let status = nics[0].continue(with: nat)
                 assert(status == .awaitingInput)
             }

@@ -4,9 +4,9 @@
 // Advent of Code 2019, Days 2, 5 and 9
 //
 
-class IntcodeVM {
+final class IntcodeVM {
 
-    enum Opcode: Int {
+    private enum Opcode: Int {
         case add = 1
         case multiply = 2
         case input = 3
@@ -34,13 +34,13 @@ class IntcodeVM {
         }
     }
 
-    enum Mode: Int {
+    private enum Mode: Int {
         case position = 0
         case immediate = 1
         case relative = 2
     }
 
-    struct Parameter {
+    private struct Parameter {
         let value: Int
         let mode: Mode
 
@@ -53,17 +53,14 @@ class IntcodeVM {
         }
     }
 
-    struct Instruction {
+    private struct Instruction {
         let opcode: Opcode
         let parameters: [Parameter]
+
+        var size: Int { 1 + opcode.parameters }
     }
 
-    enum RunResult: Equatable {
-        case end([Int])
-        case awaitingInput
-    }
-
-    class Memory {
+    final class Memory {
         fileprivate var storage = [Int: Int]()
 
         subscript(_ index: Int) -> Int {
@@ -82,15 +79,26 @@ class IntcodeVM {
         }
     }
 
+    private enum State {
+        case initial // before running or starting a program
+        case running // while running a program
+        case finished // after finishing a program
+        case awaitingInput // execution halted, can be contined when input is available
+    }
+
+    enum RunResult: Equatable {
+        case end([Int])
+        case awaitingInput
+    }
+
     private var inputs = [Int]()
     private var outputs = [Int]()
     private(set) var memory = Memory()
 
-    private var ic = 0 // input counter
-    private var pc = 0 // program counter
-    private var rBase = 0 // relative base
-    private(set) var steps = 0 // instructions executed so far
-    private var finished = false
+    private var programCounter = 0
+    private var relativeBase = 0
+
+    private var vmState = State.initial
 
     let id: String
     init(id: String = "") {
@@ -104,9 +112,11 @@ class IntcodeVM {
     ///   - patches: initial memory patches
     /// - Returns: the produced outputs
     func run(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> [Int] {
+        assert(vmState == .initial)
         let result = start(program: program, inputs: inputs, patches: patches)
         switch result {
         case .end(let outputs):
+            assert(vmState == .finished)
             return outputs
         case .awaitingInput:
             fatalError("use start()/continue()")
@@ -121,6 +131,7 @@ class IntcodeVM {
     ///   - patches: initial memory patches
     /// - Returns: the reason for stopping
     func start(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> RunResult {
+        assert(vmState == .initial)
         let keysAndValues = program.enumerated().map { ($0.offset, $0.element) }
         memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
 
@@ -128,6 +139,7 @@ class IntcodeVM {
             memory[index] = value
         }
         self.inputs = inputs
+        defer { assert(vmState == .finished || vmState == .awaitingInput) }
         return run()
     }
 
@@ -142,12 +154,14 @@ class IntcodeVM {
     /// - Parameter inputs: the inputs
     /// - Returns: the reason for stopping
     func `continue`(with inputs: [Int]) -> RunResult {
+        assert(vmState == .awaitingInput)
         addInput(inputs)
 
-        let instruction = decodeInstruction()
+        let instruction = decodeInstruction(at: programCounter)
         if instruction.opcode != .input {
-            fatalError("not waiting for input...")
+            fatalError("not waiting for input")
         }
+        defer { assert(vmState == .finished || vmState == .awaitingInput) }
         return execute()
     }
 
@@ -175,26 +189,22 @@ class IntcodeVM {
             fatalError("IntcodeVM: uninitialized memory")
         }
 
-        pc = 0
-        ic = 0
-        rBase = 0
-        steps = 0
-        finished = false
-
         return execute()
     }
 
     private func execute() -> RunResult {
+        vmState = .running
         while true {
-            let result = executeInstruction()
+            let result = executeInstruction(at: programCounter)
             switch result {
             case .end:
-                finished = true
+                vmState = .finished
                 return .end(outputs)
             case .awaitingInput:
+                vmState = .awaitingInput
                 return .awaitingInput
-            case .newPc(let newPc):
-                pc = newPc
+            case .setProgramCounter(let newPc):
+                programCounter = newPc
             }
         }
     }
@@ -202,13 +212,11 @@ class IntcodeVM {
     private enum ExecuteResult {
         case end
         case awaitingInput
-        case newPc(Int)
+        case setProgramCounter(Int)
     }
 
-    private func executeInstruction() -> ExecuteResult {
-        let instruction = decodeInstruction()
-        steps += 1
-
+    private func executeInstruction(at address: Int) -> ExecuteResult {
+        let instruction = decodeInstruction(at: address)
         let p = instruction.parameters
         let opcode = instruction.opcode
 
@@ -218,7 +226,7 @@ class IntcodeVM {
         case .multiply:
             assign(p[2], rvalue(p[0]) * rvalue(p[1]))
         case .input:
-            guard let input = input() else {
+            guard let input = consumeInput() else {
                 return .awaitingInput
             }
             assign(p[0], input)
@@ -226,11 +234,11 @@ class IntcodeVM {
             output(rvalue(p[0]))
         case .jumpIfTrue:
             if rvalue(p[0]) != 0 {
-                return .newPc(rvalue(p[1]))
+                return .setProgramCounter(rvalue(p[1]))
             }
         case .jumpIfFalse:
             if rvalue(p[0]) == 0 {
-                return .newPc(rvalue(p[1]))
+                return .setProgramCounter(rvalue(p[1]))
             }
         case .lessThan:
             let result = rvalue(p[0]) < rvalue(p[1]) ? 1 : 0
@@ -239,17 +247,17 @@ class IntcodeVM {
             let result = rvalue(p[0]) == rvalue(p[1]) ? 1 : 0
             assign(p[2], result)
         case .relativeBaseOffset:
-            rBase += rvalue(p[0])
+            relativeBase += rvalue(p[0])
         case .end:
             return .end
         }
-        return .newPc(pc + 1 + opcode.parameters)
+        return .setProgramCounter(address + instruction.size)
     }
 
-    private func assign(_ p: Parameter, _ newValue: Int) {
-        switch p.mode {
-        case .position: memory[p.value] = newValue
-        case .relative: memory[rBase + p.value] = newValue
+    private func assign(_ parameter: Parameter, _ newValue: Int) {
+        switch parameter.mode {
+        case .position: memory[parameter.value] = newValue
+        case .relative: memory[relativeBase + parameter.value] = newValue
         case .immediate: fatalError("immediate address in lvalue")
         }
     }
@@ -257,33 +265,33 @@ class IntcodeVM {
     private func rvalue(_ parameter: Parameter) -> Int {
         switch parameter.mode {
         case .position: return memory[parameter.value]
+        case .relative: return memory[relativeBase + parameter.value]
         case .immediate: return parameter.value
-        case .relative: return memory[rBase + parameter.value]
         }
     }
 
-    private func decodeInstruction() -> Instruction {
-        let (modes, opcode) = memory[pc].quotientAndRemainder(dividingBy: 100)
+    private func decodeInstruction(at address: Int) -> Instruction {
+        let (modes, opcode) = memory[address].quotientAndRemainder(dividingBy: 100)
         guard let opcode = Opcode(rawValue: opcode) else {
-            fatalError("invalid opcode \(memory[pc]) at \(ic)")
+            fatalError("invalid opcode \(memory[address]) at \(address)")
         }
 
-        let parameters = getParameters(opcode, modes)
+        let parameters = getParameters(for: opcode, at: address + 1, modes)
         return Instruction(opcode: opcode, parameters: parameters)
     }
 
-    private func getParameters(_ opcode: Opcode, _ modes: Int) -> [Parameter] {
+    private func getParameters(for opcode: Opcode, at address: Int, _ modes: Int) -> [Parameter] {
         var parameters = [Parameter]()
-        var m = modes
+        var modes = modes
         for i in 0..<opcode.parameters {
-            let (quotient, mode) = m.quotientAndRemainder(dividingBy: 10)
-            parameters.append(Parameter(value: memory[pc + i + 1], mode: mode))
-            m = quotient
+            let (quotient, mode) = modes.quotientAndRemainder(dividingBy: 10)
+            parameters.append(Parameter(value: memory[address + i], mode: mode))
+            modes = quotient
         }
         return parameters
     }
 
-    private func input() -> Int? {
+    private func consumeInput() -> Int? {
         guard let input = inputs.first else {
             return nil
         }
