@@ -33,7 +33,7 @@ final class Day23: AOCDay {
                     }
                     queue[target, default: []].append(contentsOf: [chunk[1], chunk[2]])
                 }
-                
+
                 if let inputs = queue.removeValue(forKey: i) {
                     _ = nics[i].continue(with: inputs)
                 } else {
@@ -46,7 +46,7 @@ final class Day23: AOCDay {
     func part2() -> Int {
         let nics = (0..<50).map {
             let nic = IntcodeVM(id: "\($0)")
-            let status = nic.start(program: program, inputs: [$0, -1])
+            _ = nic.start(program: program, inputs: [$0, -1])
             return nic
         }
 

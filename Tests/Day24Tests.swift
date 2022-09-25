@@ -3,12 +3,18 @@ import XCTest
 
 final class Day24Tests: XCTestCase {
     func testDay24_1() throws {
-        let day = Day24(rawInput: "foo")
-        XCTAssertEqual(day.part1(), 0)
+        let day = Day24(rawInput: """
+            ....#
+            #..#.
+            #..##
+            ..#..
+            #....
+            """)
+        XCTAssertEqual(day.part1(), 2129920)
     }
 
-    func testDay24_2() throws {
-        let day = Day24(rawInput: "bar")
-        XCTAssertEqual(day.part2(), 0)
-    }
+//    func testDay24_2() throws {
+//        let day = Day24(rawInput: "bar")
+//        XCTAssertEqual(day.part2(), 0)
+//    }
 }
