@@ -8,6 +8,8 @@ import AoCTools
 
 final class Day23: AOCDay {
     let program: [Int]
+    let NAT = 255
+
     init(rawInput: String? = nil) {
         let input = rawInput ?? Self.rawInput
         program = input.components(separatedBy: ",").map { Int($0)! }
@@ -16,8 +18,7 @@ final class Day23: AOCDay {
     func part1() -> Int {
         let nics = (0..<50).map {
             let nic = IntcodeVM(id: "\($0)")
-            let status = nic.start(program: program, inputs: [$0])
-            assert(status == .awaitingInput)
+            _ = nic.start(program: program, inputs: [$0, -1])
             return nic
         }
 
@@ -26,19 +27,17 @@ final class Day23: AOCDay {
             for i in 0..<50 {
                 let output = nics[i].consumeOutput()
                 for chunk in output.chunked(3) {
-                    assert(chunk.count == 3)
                     let target = chunk[0]
-                    if target == 255 {
+                    if target == NAT {
                         return chunk[2]
                     }
                     queue[target, default: []].append(contentsOf: [chunk[1], chunk[2]])
                 }
+                
                 if let inputs = queue.removeValue(forKey: i) {
-                    let status = nics[i].continue(with: inputs)
-                    assert(status == .awaitingInput)
+                    _ = nics[i].continue(with: inputs)
                 } else {
-                    let status = nics[i].continue(with: [-1])
-                    assert(status == .awaitingInput)
+                    _ = nics[i].continue(with: [-1])
                 }
             }
         }
@@ -47,14 +46,13 @@ final class Day23: AOCDay {
     func part2() -> Int {
         let nics = (0..<50).map {
             let nic = IntcodeVM(id: "\($0)")
-            let status = nic.start(program: program, inputs: [$0])
-            assert(status == .awaitingInput)
+            let status = nic.start(program: program, inputs: [$0, -1])
             return nic
         }
 
-        var nat = [Int]()
+        var lastSentY = Int.min
         var queue = [Int: [Int]]()
-        var idleLoops = 0
+
         while true {
             var allIdle = true
 
@@ -62,42 +60,24 @@ final class Day23: AOCDay {
                 let output = nics[i].consumeOutput()
                 for chunk in output.chunked(3) {
                     allIdle = false
-                    let target = chunk[0]
-                    let packet = Array(chunk.dropFirst())
-                    if target == 255 {
-                        if !nat.isEmpty && packet[1] == nat[1] {
-                            return nat[1]
-                        }
-                        print("store nat", packet)
-                        nat = packet
-                    } else {
-                        print(i, "send", packet, "to", target)
-                        queue[target, default: []].append(contentsOf: packet)
-                    }
+                    queue[chunk[0], default: []].append(contentsOf: Array(chunk.dropFirst()))
                 }
-            }
 
-            for i in 0..<50 {
                 if let inputs = queue.removeValue(forKey: i) {
                     allIdle = false
-                    let status = nics[i].continue(with: inputs)
-                    assert(status == .awaitingInput)
+                    _ = nics[i].continue(with: inputs)
                 } else {
-                    let status = nics[i].continue(with: [-1])
-                    assert(status == .awaitingInput)
+                    _ = nics[i].continue(with: [-1])
                 }
             }
 
-            if allIdle {
-                idleLoops += 1
-            } else {
-                idleLoops = 0
-            }
-
-            if idleLoops == 100 && !nat.isEmpty {
-                print("send nat", nat)
-                let status = nics[0].continue(with: nat)
-                assert(status == .awaitingInput)
+            if allIdle, let last = queue[NAT]?.suffix(2) {
+                let nat = Array(last)
+                if nat[1] == lastSentY {
+                    return lastSentY
+                }
+                lastSentY = nat[1]
+                _ = nics[0].continue(with: Array(nat))
             }
         }
     }
