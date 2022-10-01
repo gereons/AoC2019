@@ -6,17 +6,6 @@
 
 import AoCTools
 
-private extension String {
-    var ascii: [Int] {
-        self.map { Int($0.asciiValue!) }
-    }
-
-    init(ints: [Int]) {
-        let chars = ints.map { Character(UnicodeScalar($0)!) }
-        self.init(chars)
-    }
-}
-
 final class Day21: AOCDay {
     let program: [Int]
     init(rawInput: String? = nil) {
