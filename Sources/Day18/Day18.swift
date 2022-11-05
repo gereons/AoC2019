@@ -8,23 +8,23 @@ import AoCTools
 import Darwin
 
 private enum Tile: Drawable, Equatable {
-    var draw: String {
+    var draw: Character {
         switch self {
         case .wall: return "#"
         case .floor: return "."
         case .entrance: return "@"
-        case .key(let str), .lock(let str):
-            return str
+        case .key(let ch), .lock(let ch):
+            return ch
         }
     }
 
-    static func value(for str: String) -> Tile {
-        switch str {
+    static func value(for ch: Character) -> Tile {
+        switch ch {
         case "#": return .wall
         case ".": return .floor
         case "@": return .entrance
-        case "a"..."z": return .key(str)
-        case "A"..."Z": return .lock(str)
+        case "a"..."z": return .key(ch)
+        case "A"..."Z": return .lock(ch)
         default: fatalError()
         }
     }
@@ -32,17 +32,17 @@ private enum Tile: Drawable, Equatable {
     case floor
     case wall
     case entrance
-    case key(String)
-    case lock(String)
+    case key(Character)
+    case lock(Character)
 
-    var key: String? {
+    var key: Character? {
         switch self {
         case .key(let key): return key
         default: return nil
         }
     }
 
-    var lock: String? {
+    var lock: Character? {
         switch self {
         case .lock(let lock): return lock
         default: return nil
@@ -62,7 +62,7 @@ private enum Tile: Drawable, Equatable {
 }
 
 private struct Key: Hashable {
-    let letter: String
+    let letter: Character
     let point: Point
 }
 
@@ -73,8 +73,8 @@ private struct Keys: Hashable {
 
 private struct Path: Hashable {
     let points: [Point]
-    let keysNeeded: Set<String>
-    let collectingKeys: Set<String>
+    let keysNeeded: Set<Character>
+    let collectingKeys: Set<Character>
 
     var length: Int { points.count }
 }
@@ -129,12 +129,13 @@ private class Vault {
         let pathfinder = AStarPathfinder(map: self)
 
         let path = pathfinder.shortestPath(from: from.point, to: to.point)
-        var keysNeeded = Set<String>()
-        var collectingKeys = Set<String>()
+        var keysNeeded = Set<Character>()
+        var collectingKeys = Set<Character>()
+
         for p in path {
             switch points[p] {
-            case .lock(let letter): keysNeeded.insert(letter.lowercased())
-            case .key(let letter): collectingKeys.insert(letter.lowercased())
+            case .lock(let letter): keysNeeded.insert(Character(letter.lowercased()))
+            case .key(let letter): collectingKeys.insert(Character(letter.lowercased()))
             case .wall: fatalError()
             default: ()
             }
@@ -159,7 +160,7 @@ extension Vault {
 
     private struct MemoKey: Hashable {
         let points: Set<Point>
-        let keys: Set<String>
+        let keys: Set<Character>
     }
 
     func minimumSteps(from: Set<Point>) -> Int {
@@ -168,7 +169,7 @@ extension Vault {
     }
 
     private func minimumSteps(from: Set<Point>,
-                              haveKeys: Set<String>,
+                              haveKeys: Set<Character>,
                               seen: inout [MemoKey: Int]
     ) -> Int {
         let state = MemoKey(points: from, keys: haveKeys)
@@ -193,7 +194,7 @@ extension Vault {
         let cause: Point
     }
 
-    private func findReachable(from: Set<Point>, _ haveKeys: Set<String>) -> [String: ReachableKey] {
+    private func findReachable(from: Set<Point>, _ haveKeys: Set<Character>) -> [Character: ReachableKey] {
         let array = from
             .map { point in
                 findReachableKeys(from: point, haveKeys: haveKeys).map {
@@ -209,12 +210,12 @@ extension Vault {
         let distance: Int
     }
 
-    private func findReachableKeys(from point: Point, haveKeys: Set<String>) -> [String: KeyDistance] {
+    private func findReachableKeys(from point: Point, haveKeys: Set<Character>) -> [Character: KeyDistance] {
         var queue = Queue<Point>()
         queue.push(point)
 
         var distance = [point: 0]
-        var keyDistance = [String: KeyDistance]()
+        var keyDistance = [Character: KeyDistance]()
 
         while !queue.isEmpty {
             let next = queue.pop()

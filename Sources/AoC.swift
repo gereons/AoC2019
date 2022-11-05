@@ -12,7 +12,7 @@ struct AdventOfCode {
     }
 
     static func main() {
-        run(.day(25))
+        run(.all)
         Timer.showTotal()
     }
 

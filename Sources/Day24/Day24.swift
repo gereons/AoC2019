@@ -6,32 +6,9 @@
 
 import AoCTools
 
-private enum Tile: Drawable, Hashable, Equatable {
-    case bug
-    case empty
-
-    var draw: String {
-        switch self {
-        case .bug: return "#"
-        case .empty: return "."
-        }
-    }
-
-    init(_ ch: Character) {
-        switch ch {
-        case "#": self = .bug
-        case ".": self = .empty
-        default: fatalError("invalid tile \(ch)")
-        }
-    }
-
-    static func value(for str: String) -> Tile {
-        switch str {
-        case "#": return .bug
-        case ".": return .empty
-        default: fatalError("invalid tile \(str)")
-        }
-    }
+private enum Tile: Character, Drawable, Hashable, Equatable {
+    case bug = "#"
+    case empty = "."
 }
 
 extension Grid where Value == Tile {
