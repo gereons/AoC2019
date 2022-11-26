@@ -6,7 +6,6 @@
 
 import AoCTools
 
-
 final class Day20: AOCDay {
     private let input: String
     init(rawInput: String? = nil) {

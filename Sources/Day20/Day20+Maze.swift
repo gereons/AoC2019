@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Day20+Maze.swift
 //  
 //
 //  Created by Gereon Steffens on 19.09.22.
@@ -113,7 +113,7 @@ extension Day20.Maze: Pathfinding {
         return neighbors
     }
 
-    func hScore(from: Point, to: Point) -> Int {
+    func distance(from: Point, to: Point) -> Int {
         if let connect = connections[from], connect == to {
             return 1
         }

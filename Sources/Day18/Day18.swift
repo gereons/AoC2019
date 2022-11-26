@@ -217,8 +217,7 @@ extension Vault {
         var distance = [point: 0]
         var keyDistance = [Character: KeyDistance]()
 
-        while !queue.isEmpty {
-            let next = queue.pop()
+        while let next = queue.pop() {
             next.neighbors()
                 .filter { points[$0] != .wall }
                 .filter { distance[$0] == nil }
