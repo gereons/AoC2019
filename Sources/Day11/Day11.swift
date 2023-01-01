@@ -32,12 +32,13 @@ final class Day11: AOCDay {
             switch result {
             case .awaitingInput:
                 let outputs = robot.consumeOutput()
+                assert(outputs.count == 2)
                 grid[position] = outputs[0]
                 let turn = outputs[1] == 0 ? Point.Turn.counterclockwise : .clockwise
                 direction = direction.turned(turn)
                 position = position + direction.offset
             case .end:
-                break
+                return
             }
         }
     }
