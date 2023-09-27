@@ -3,7 +3,7 @@ import XCTest
 
 final class Day22Tests: XCTestCase {
     func testDay22_1a() throws {
-        let day = Day22(rawInput: """
+        let day = Day22(input: """
         deal with increment 7
         deal into new stack
         deal into new stack
@@ -13,7 +13,7 @@ final class Day22Tests: XCTestCase {
     }
 
     func testDay22_1b() throws {
-        let day = Day22(rawInput: """
+        let day = Day22(input: """
         cut 6
         deal with increment 7
         deal into new stack
@@ -23,7 +23,7 @@ final class Day22Tests: XCTestCase {
     }
 
     func testDay22_1c() throws {
-        let day = Day22(rawInput: """
+        let day = Day22(input: """
         deal with increment 7
         deal with increment 9
         cut -2
@@ -33,7 +33,7 @@ final class Day22Tests: XCTestCase {
     }
 
     func testDay22_1d() throws {
-        let day = Day22(rawInput: """
+        let day = Day22(input: """
         deal into new stack
         cut -2
         deal with increment 7

@@ -3,7 +3,7 @@ import XCTest
 
 final class Day14Tests: XCTestCase {
     func testDay14_1a() throws {
-        let day = Day14(rawInput: """
+        let day = Day14(input: """
             10 ORE => 10 A
             1 ORE => 1 B
             7 A, 1 B => 1 C
@@ -15,7 +15,7 @@ final class Day14Tests: XCTestCase {
     }
 
     func testDay14_1b() throws {
-        let day = Day14(rawInput: """
+        let day = Day14(input: """
             9 ORE => 2 A
             8 ORE => 3 B
             7 ORE => 5 C
@@ -39,7 +39,7 @@ final class Day14Tests: XCTestCase {
             44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
             """
     func testDay14_1c() throws {
-        let day = Day14(rawInput: r1)
+        let day = Day14(input: r1)
         XCTAssertEqual(day.part1(), 13312)
     }
 
@@ -58,7 +58,7 @@ final class Day14Tests: XCTestCase {
             176 ORE => 6 VJHF
             """
     func testDay14_1d() throws {
-        let day = Day14(rawInput: r2)
+        let day = Day14(input: r2)
         XCTAssertEqual(day.part1(), 180697)
     }
 
@@ -82,13 +82,13 @@ final class Day14Tests: XCTestCase {
             5 BHXH, 4 VRPVC => 5 LTCX
             """
     func testDay14_1e() throws {
-        let day = Day14(rawInput: r3)
+        let day = Day14(input: r3)
         XCTAssertEqual(day.part1(), 2210736)
     }
 
     func testDay14_2() throws {
-        XCTAssertEqual(Day14(rawInput: r1).part2(), 82892753)
-        XCTAssertEqual(Day14(rawInput: r2).part2(), 5586022)
-        XCTAssertEqual(Day14(rawInput: r3).part2(), 460664)
+        XCTAssertEqual(Day14(input: r1).part2(), 82892753)
+        XCTAssertEqual(Day14(input: r2).part2(), 5586022)
+        XCTAssertEqual(Day14(input: r3).part2(), 460664)
     }
 }

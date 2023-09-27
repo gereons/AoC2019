@@ -55,8 +55,8 @@ private extension Point {
 
 final class Day17: AOCDay {
     let program: [Int]
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         program = input.components(separatedBy: ",").map { Int(String($0))! }
     }
 
@@ -120,7 +120,7 @@ final class Day17: AOCDay {
         grid.draw()
 
         var current = robot
-        var direction = Point.Direction.n
+        var direction = Direction.n
 
         var segments = [String]()
         var currentSegment = 0
@@ -133,7 +133,7 @@ final class Day17: AOCDay {
             } else {
                 segments.append("\(currentSegment)")
                 currentSegment = 0
-                let possibleTurns: [Point.Turn] = [.clockwise, .counterclockwise]
+                let possibleTurns: [Turn] = [.clockwise, .counterclockwise]
                     .filter { grid.points[direction.turned($0).offset + current] == .wall }
                 if possibleTurns.isEmpty {
                     break

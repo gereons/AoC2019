@@ -14,10 +14,10 @@ private enum Direction {
 
     var offset: Point {
         switch self {
-        case .up: return Point.Direction.s.offset
-        case .down: return Point.Direction.n.offset
-        case .left: return Point.Direction.w.offset
-        case .right: return Point.Direction.e.offset
+        case .up: return AoCTools.Direction.s.offset
+        case .down: return AoCTools.Direction.n.offset
+        case .left: return AoCTools.Direction.w.offset
+        case .right: return AoCTools.Direction.e.offset
         }
     }
 
@@ -36,8 +36,8 @@ private enum Direction {
 final class Day03: AOCDay {
     private let wires: [[Direction]]
 
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         let lines = input.components(separatedBy: "\n")
         wires = lines.map {
             $0.components(separatedBy: ",").map { Direction($0) }
@@ -90,7 +90,7 @@ final class Day03: AOCDay {
         switch step {
         case .down(let len), .up(let len), .left(let len), .right(let len):
             for _ in 0..<len {
-                next = next.add(step.offset)
+                next = next + step.offset
                 points.append(next)
             }
         }

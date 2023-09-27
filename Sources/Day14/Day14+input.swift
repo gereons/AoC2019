@@ -3,7 +3,7 @@
 //
 
 extension Day14 {
-static let rawInput = #"""
+static let input = #"""
 14 FTHZP => 8 NXVR
 103 ORE => 1 RHWM
 3 JQLZ, 13 ZWNK, 4 JLBM => 4 GTNG

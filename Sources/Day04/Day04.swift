@@ -8,8 +8,8 @@ import AoCTools
 
 final class Day04: AOCDay {
     let range: ClosedRange<Int>
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         let range = input.components(separatedBy: "-").map { Int($0)! }
         self.range = range[0]...range[1]
     }

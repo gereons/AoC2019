@@ -3,7 +3,7 @@
 //
 
 extension Day10 {
-static let rawInput = #"""
+static let input = #"""
 .###..#......###..#...#
 #.#..#.##..###..#...#.#
 #.#.#.##.#..##.#.###.##

@@ -8,7 +8,7 @@ final class Day18Tests: XCTestCase {
         #b.A.@.a#
         #########
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part1(), 8)
     }
 
@@ -20,7 +20,7 @@ final class Day18Tests: XCTestCase {
         #d.....................#
         ########################
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part1(), 86)
     }
 
@@ -32,7 +32,7 @@ final class Day18Tests: XCTestCase {
         #.....@.a.B.c.d.A.e.F.g#
         ########################
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part1(), 132)
     }
 
@@ -48,7 +48,7 @@ final class Day18Tests: XCTestCase {
         #l.F..d...h..C.m#
         #################
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part1(), 136)
     }
 
@@ -61,7 +61,7 @@ final class Day18Tests: XCTestCase {
         ###g#h#i################
         ########################
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part1(), 81)
     }
 
@@ -75,7 +75,7 @@ final class Day18Tests: XCTestCase {
         #cB#.b#
         #######
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part2(), 8)
     }
 
@@ -89,7 +89,7 @@ final class Day18Tests: XCTestCase {
         #b.....#.....c#
         ###############
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part2(), 24)
     }
 
@@ -103,7 +103,7 @@ final class Day18Tests: XCTestCase {
         #fEbA.#.FgHi#
         #############
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part2(), 32)
     }
 
@@ -119,7 +119,7 @@ final class Day18Tests: XCTestCase {
         #o#m..#i#jk.#
         #############
         """
-        let day = Day18(rawInput: input)
+        let day = Day18(input: input)
         XCTAssertEqual(day.part2(), 72)
     }
 }

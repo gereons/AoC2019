@@ -3,7 +3,7 @@
 //
 
 extension Day22 {
-static let rawInput = #"""
+static let input = #"""
 deal with increment 18
 cut -3893
 deal with increment 15

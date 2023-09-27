@@ -6,7 +6,7 @@
 
 import AoCTools
 
-extension Point.Direction {
+extension Direction {
     var input: Int {
         switch self {
         case .n: return 1
@@ -28,7 +28,7 @@ private class Grid {
     private(set) var points = [Point: Tile]()
 
     private(set) var current = Point.zero
-    private(set) var direction = Point.Direction.n
+    private(set) var direction = Direction.n
     private let droid: IntcodeVM
 
     init(program: [Int]) {
@@ -43,7 +43,7 @@ private class Grid {
 
         while !mapBuilt(visited) {
             direction = chooseDirection()
-            let target = current.add(direction.offset)
+            let target = current + direction.offset
             assert(points[target] != .wall)
             let result = droid.continue(with: [direction.input])
             switch result {
@@ -85,7 +85,7 @@ private class Grid {
         return visited.values.allSatisfy { $0 > 1 }
     }
 
-    func chooseDirection() -> Point.Direction {
+    func chooseDirection() -> Direction {
         let rightHand = direction.turned(.clockwise)
         if points[current + rightHand.offset] == .wall {
             if points[current + direction.offset] != .wall {
@@ -166,8 +166,8 @@ extension Grid: Pathfinding {
 
 final class Day15: AOCDay {
     let program: [Int]
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 

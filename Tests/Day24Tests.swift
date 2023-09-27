@@ -3,7 +3,7 @@ import AoCTools
 @testable import AdventOfCode
 
 final class Day24Tests: XCTestCase {
-    let day = Day24(rawInput: """
+    let day = Day24(input: """
             ....#
             #..#.
             #..##
@@ -64,7 +64,7 @@ final class Day24Tests: XCTestCase {
     }
 
     func testRecursiveNeighbors() throws {
-        let day = Day24(rawInput: """
+        let day = Day24(input: """
             ....#
             #..#.
             #..##
@@ -116,7 +116,7 @@ final class Day24Tests: XCTestCase {
     }
 
     func testDay24_2() throws {
-        let day = Day24(rawInput: """
+        let day = Day24(input: """
             ....#
             #..#.
             #..##

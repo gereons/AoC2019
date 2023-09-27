@@ -22,7 +22,7 @@ cat <<END
 //
 
 extension Day$D2 {
-static let rawInput = #"""
+static let input = #"""
 END
 
 cat $TMP

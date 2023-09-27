@@ -3,7 +3,7 @@ import XCTest
 
 final class Day07Tests: XCTestCase {
     func testDay07_1() throws {
-        let d = Day07(rawInput: "99")
+        let d = Day07(input: "99")
         XCTAssertEqual(d.thrusterSignal(program: [3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0],
                                         phaseSetting: [4,3,2,1,0]),
                        43210)
@@ -19,7 +19,7 @@ final class Day07Tests: XCTestCase {
     }
 
     func testDay07_2() throws {
-        let d = Day07(rawInput: "99")
+        let d = Day07(input: "99")
         XCTAssertEqual(d.thrusterSignalFeedback(program: [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
                                                           27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5],
                                                 phaseSetting: [9,8,7,6,5]),

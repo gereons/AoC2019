@@ -10,8 +10,8 @@ final class Day23: AOCDay {
     let program: [Int]
     let NAT = 255
 
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 

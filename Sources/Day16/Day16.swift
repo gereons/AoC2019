@@ -9,10 +9,11 @@ import Darwin
 
 final class Day16: AOCDay {
     let digits: [Int]
-    let input: String
+    let rawInput: String
 
-    init(rawInput: String? = nil) {
-        input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
+        rawInput = input
         digits = input.map { Int(String($0))! }
     }
 
@@ -55,7 +56,7 @@ final class Day16: AOCDay {
     // the right of it. keep the last digit of this sum
     // this means that anything to the left of the message offset can be ignored
     func part2() -> String {
-        let offset = Int(String(input.prefix(7)))!
+        let offset = Int(String(rawInput.prefix(7)))!
 
         // get the part of the input we're interested in
         var input = (offset ... 10000 * digits.count).map {

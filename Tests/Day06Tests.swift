@@ -17,7 +17,7 @@ final class Day06Tests: XCTestCase {
     """
 
     func testDay06_1() throws {
-        let day = Day06(rawInput: orbits1)
+        let day = Day06(input: orbits1)
         XCTAssertEqual(day.part1(), 42)
     }
 
@@ -38,7 +38,7 @@ final class Day06Tests: XCTestCase {
     """
 
     func testDay06_2() throws {
-        let day = Day06(rawInput: orbits2)
+        let day = Day06(input: orbits2)
         XCTAssertEqual(day.part2(), 4)
     }
 }

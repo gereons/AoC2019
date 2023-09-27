@@ -8,8 +8,8 @@ import AoCTools
 
 final class Day11: AOCDay {
     let program: [Int]
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 
@@ -25,7 +25,7 @@ final class Day11: AOCDay {
         assert(status == .awaitingInput)
 
         var position = Point.zero
-        var direction = Point.Direction.n
+        var direction = Direction.n
 
         while true {
             let result = robot.continue(with: grid[position, default: 0])
@@ -34,7 +34,7 @@ final class Day11: AOCDay {
                 let outputs = robot.consumeOutput()
                 assert(outputs.count == 2)
                 grid[position] = outputs[0]
-                let turn = outputs[1] == 0 ? Point.Turn.counterclockwise : .clockwise
+                let turn = outputs[1] == 0 ? Turn.counterclockwise : .clockwise
                 direction = direction.turned(turn)
                 position = position + direction.offset
             case .end:

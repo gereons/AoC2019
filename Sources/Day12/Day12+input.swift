@@ -3,7 +3,7 @@
 //
 
 extension Day12 {
-static let rawInput = #"""
+static let input = #"""
 <x=14, y=4, z=5>
 <x=12, y=10, z=8>
 <x=1, y=7, z=-10>

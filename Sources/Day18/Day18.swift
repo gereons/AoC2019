@@ -242,8 +242,8 @@ extension Vault {
 
 final class Day18: AOCDay {
     private let grid: Grid<Tile>
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         grid = Grid.parse(input.components(separatedBy: "\n"))
     }
 

@@ -9,8 +9,8 @@ import AoCTools
 final class Day08: AOCDay {
     let layers: [[Int]]
 
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         let digits = input.map { Int(String($0))! }
         layers = digits.chunked(25*6)
         assert(layers.allSatisfy { $0.count == 25 * 6})

@@ -12,8 +12,8 @@ final class Day10: AOCDay {
     let maxX: Int
     let maxY: Int
 
-    init(rawInput: String? = nil) {
-        let input = rawInput ?? Self.rawInput
+    init(input: String? = nil) {
+        let input = input ?? Self.input
         let lines = input.components(separatedBy: "\n")
         var grid = Set<Point>()
         for (y, line) in lines.enumerated() {
@@ -128,7 +128,7 @@ final class Day10: AOCDay {
 }
 
 extension Point {
-    func moved(_ direction: Point.Direction) -> Point {
+    func moved(_ direction: Direction) -> Point {
         self + direction.offset
     }
 }

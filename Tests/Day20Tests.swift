@@ -24,7 +24,7 @@ final class Day20Tests: XCTestCase {
                      Z
                      Z
         """
-        let day = Day20(rawInput: input)
+        let day = Day20(input: input)
         XCTAssertEqual(day.part1(), 23)
     }
 
@@ -68,7 +68,7 @@ final class Day20Tests: XCTestCase {
                    B   J   C
                    U   P   P
         """
-        let day = Day20(rawInput: input)
+        let day = Day20(input: input)
         XCTAssertEqual(day.part1(), 58)
     }
 
@@ -94,7 +94,7 @@ final class Day20Tests: XCTestCase {
                      Z
                      Z
         """
-        let day = Day20(rawInput: input)
+        let day = Day20(input: input)
         XCTAssertEqual(day.part2(), 26)
     }
 
@@ -138,7 +138,7 @@ final class Day20Tests: XCTestCase {
                    B   J   C
                    U   P   P
         """
-        let day = Day20(rawInput: input)
+        let day = Day20(input: input)
         XCTAssertEqual(day.part2(), 0)
     }
 
@@ -182,7 +182,7 @@ RE....#.#                           #......RF
                A O F   N
                A A D   M
 """
-        let day = Day20(rawInput: input)
+        let day = Day20(input: input)
         XCTAssertEqual(day.part2(), 396)
     }
 }

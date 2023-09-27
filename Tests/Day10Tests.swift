@@ -4,7 +4,7 @@ import AoCTools
 
 final class Day10Tests: XCTestCase {
     func testDay10_1() throws {
-        let d1 = Day10(rawInput: """
+        let d1 = Day10(input: """
             .#..#
             .....
             #####
@@ -13,7 +13,7 @@ final class Day10Tests: XCTestCase {
             """)
         XCTAssertEqual(d1.part1(), 8)
 
-        let d2 = Day10(rawInput: """
+        let d2 = Day10(input: """
             ......#.#.
             #..#.#....
             ..#######.
@@ -27,7 +27,7 @@ final class Day10Tests: XCTestCase {
             """)
         XCTAssertEqual(d2.part1(), 33)
 
-        let d3 = Day10(rawInput: """
+        let d3 = Day10(input: """
             #.#...#.#.
             .###....#.
             .#....#...
@@ -41,7 +41,7 @@ final class Day10Tests: XCTestCase {
             """)
         XCTAssertEqual(d3.part1(), 35)
 
-        let d4 = Day10(rawInput: """
+        let d4 = Day10(input: """
             .#..##.###...#######
             ##.############..##.
             .#.######.########.#
@@ -67,7 +67,7 @@ final class Day10Tests: XCTestCase {
     }
 
     func testDay10_2() throws {
-        let d3 = Day10(rawInput: """
+        let d3 = Day10(input: """
         .#....#####...#..
         ##...##.#####..##
         ##...#...#.#####.
@@ -78,7 +78,7 @@ final class Day10Tests: XCTestCase {
     }
 
     func testDay10_3() throws {
-        let d3 = Day10(rawInput: """
+        let d3 = Day10(input: """
             .#..##.###...#######
             ##.############..##.
             .#.######.########.#
