@@ -35,13 +35,11 @@ final class Day24: AOCDay {
     private let grid: Grid<Tile>
     let generations: Int
 
-    convenience init(input: String? = nil) {
+    convenience init(input: String) {
         self.init(input: input, generations: 200)
     }
 
-    init(input: String? = nil, generations: Int) {
-        let input = input ?? Self.input
-
+    init(input: String, generations: Int) {
         self.grid = Grid.parse(input.components(separatedBy: "\n"))
         self.generations = generations
     }

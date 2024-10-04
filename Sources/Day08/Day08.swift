@@ -5,14 +5,14 @@
 //
 
 import AoCTools
+import Algorithms
 
 final class Day08: AOCDay {
     let layers: [[Int]]
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         let digits = input.map { Int(String($0))! }
-        layers = digits.chunked(25*6)
+        layers = digits.chunks(ofCount: 25*6).map { [Int]($0) }
         assert(layers.allSatisfy { $0.count == 25 * 6})
     }
 
@@ -41,7 +41,7 @@ final class Day08: AOCDay {
             composed.append(color)
         }
 
-        let lines = composed.chunked(25)
+        let lines = composed.chunks(ofCount: 25)
         for line in lines {
             for pixel in line {
                 let ch: String

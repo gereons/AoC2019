@@ -20,8 +20,7 @@ struct Orbit {
 final class Day06: AOCDay {
     let orbits: [Orbit]
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         orbits = input.components(separatedBy: "\n").map { Orbit($0) }
     }
 

@@ -16,7 +16,7 @@ extension Day20 {
         let point: Point3
     }
 
-    class Maze3D {
+    final class Maze3D {
         private var points = [[Point: Tile]]()
         private(set) var start = Point3.zero
         private(set) var end = Point3.zero

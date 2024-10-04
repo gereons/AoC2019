@@ -36,8 +36,7 @@ private enum Direction {
 final class Day03: AOCDay {
     private let wires: [[Direction]]
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         let lines = input.components(separatedBy: "\n")
         wires = lines.map {
             $0.components(separatedBy: ",").map { Direction($0) }

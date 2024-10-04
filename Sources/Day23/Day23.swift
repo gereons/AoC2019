@@ -10,8 +10,7 @@ final class Day23: AOCDay {
     let program: [Int]
     let NAT = 255
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 
@@ -26,7 +25,8 @@ final class Day23: AOCDay {
         while true {
             for i in 0..<50 {
                 let output = nics[i].consumeOutput()
-                for chunk in output.chunked(3) {
+                for chunk in output.chunks(ofCount: 3) {
+                    let chunk = Array(chunk)
                     let target = chunk[0]
                     if target == NAT {
                         return chunk[2]
@@ -58,9 +58,9 @@ final class Day23: AOCDay {
 
             for i in 0..<50 {
                 let output = nics[i].consumeOutput()
-                for chunk in output.chunked(3) {
+                for chunk in output.chunks(ofCount: 3) {
                     allIdle = false
-                    queue[chunk[0], default: []].append(contentsOf: Array(chunk.dropFirst()))
+                    queue[chunk.first!, default: []].append(contentsOf: Array(chunk.dropFirst()))
                 }
 
                 if let inputs = queue.removeValue(forKey: i) {

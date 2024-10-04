@@ -2,6 +2,7 @@ import XCTest
 import AoCTools
 @testable import AdventOfCode
 
+@MainActor
 final class Day24Tests: XCTestCase {
     let day = Day24(input: """
             ....#

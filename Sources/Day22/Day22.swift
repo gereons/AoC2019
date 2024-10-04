@@ -30,12 +30,11 @@ final class Day22: AOCDay {
     private let shuffles: [Shuffle]
     private(set) var deck: [Int]
 
-    convenience init(input: String? = nil) {
+    convenience init(input: String) {
         self.init(input: input, deckSize: 10007)
     }
 
-    init(input: String? = nil, deckSize: Int) {
-        let input = input ?? Self.input
+    init(input: String, deckSize: Int) {
         self.shuffles = input.components(separatedBy: "\n").map { Shuffle($0) }
         self.deck = Array(0..<deckSize)
     }

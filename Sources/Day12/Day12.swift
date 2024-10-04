@@ -32,11 +32,11 @@ private struct Moon: Hashable {
 
 final class Day12: AOCDay {
     let coordinates: [Point3]
-    init(input: String? = nil) {
+
+    init(input: String) {
         // <x=-8, y=-10, z=0>
         let regex = Regex(pattern: #"<x=(-?\d*), y=(-?\d*), z=(-?\d*)>"#)
 
-        let input = input ?? Self.input
         coordinates = input.components(separatedBy: "\n").map { line -> Point3 in
             let matches = regex.matches(in: line)
             return Point3(Int(matches[0])!, Int(matches[1])!, Int(matches[2])!)

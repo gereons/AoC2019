@@ -1,6 +1,7 @@
 import XCTest
 @testable import AdventOfCode
 
+@MainActor
 final class Day06Tests: XCTestCase {
     let orbits1 = """
     COM)B

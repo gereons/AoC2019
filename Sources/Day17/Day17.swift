@@ -55,8 +55,8 @@ private extension Point {
 
 final class Day17: AOCDay {
     let program: [Int]
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+
+    init(input: String) {
         program = input.components(separatedBy: ",").map { Int(String($0))! }
     }
 

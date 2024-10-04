@@ -8,8 +8,8 @@ import AoCTools
 
 final class Day04: AOCDay {
     let range: ClosedRange<Int>
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+
+    init(input: String) {
         let range = input.components(separatedBy: "-").map { Int($0)! }
         self.range = range[0]...range[1]
     }
@@ -17,11 +17,11 @@ final class Day04: AOCDay {
     func part1() -> Int {
         range
             .map { $0 }
-            .filter { isValidPassword($0) }
+            .filter { Self.isValidPassword($0) }
             .count
     }
 
-    func isValidPassword(_ n: Int) -> Bool {
+    static func isValidPassword(_ n: Int) -> Bool {
         let s = String(n)
         let digits = s.map { $0 }
 
@@ -35,11 +35,11 @@ final class Day04: AOCDay {
     func part2() -> Int {
         range
             .map { $0 }
-            .filter { isValidPassword2($0) }
+            .filter { Self.isValidPassword2($0) }
             .count
     }
 
-    func isValidPassword2(_ n: Int) -> Bool {
+    static func isValidPassword2(_ n: Int) -> Bool {
         let s = String(n)
         let digits = s.map { $0 }
 

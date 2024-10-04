@@ -26,8 +26,8 @@ private enum Tile: Int {
 
 final class Day13: AOCDay {
     let program: [Int]
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+
+    init(input: String) {
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 
@@ -42,7 +42,8 @@ final class Day13: AOCDay {
     private func makeGrid(_ outputs: [Int]) -> [Point: Tile] {
         var grid = [Point: Tile]()
         assert(outputs.count.isMultiple(of: 3))
-        for chunk in outputs.chunked(3) {
+        for chunk in outputs.chunks(ofCount: 3) {
+            let chunk = Array(chunk)
             let point = Point(chunk[0], chunk[1])
             let tile = Tile(rawValue: chunk[2])!
             grid[point] = tile
@@ -53,7 +54,8 @@ final class Day13: AOCDay {
     private func makeGrid(_ outputs: [Int], _ ball: inout Point, _ paddle: inout Point, _ score: inout Int) -> [Point: Tile] {
         var grid = [Point: Tile]()
         assert(outputs.count.isMultiple(of: 3))
-        for chunk in outputs.chunked(3) {
+        for chunk in outputs.chunks(ofCount: 3) {
+            let chunk = Array(chunk)
             let point = Point(chunk[0], chunk[1])
             if point.x == -1 && point.y == 0 {
                 score = chunk[2]

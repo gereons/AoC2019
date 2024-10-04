@@ -9,8 +9,7 @@ import AoCTools
 final class Day01: AOCDay {
     let modules: [Int]
     
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         modules = input.components(separatedBy: "\n").map { Int($0)! }
     }
 

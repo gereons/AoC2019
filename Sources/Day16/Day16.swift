@@ -11,8 +11,7 @@ final class Day16: AOCDay {
     let digits: [Int]
     let rawInput: String
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         rawInput = input
         digits = input.map { Int(String($0))! }
     }

@@ -50,8 +50,7 @@ final class Day14: AOCDay {
     private var producers = [String: Reaction]()
     private var inventory = [String: Int]()
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         reactions = input.components(separatedBy: "\n").map { Reaction($0) }
         producers = Dictionary(uniqueKeysWithValues: zip(reactions.map { $0.output.name}, reactions))
     }

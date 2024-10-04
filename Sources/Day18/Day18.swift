@@ -5,7 +5,7 @@
 //
 
 import AoCTools
-import Darwin
+import Collections
 
 private enum Tile: Drawable, Equatable {
     var draw: Character {
@@ -211,13 +211,13 @@ extension Vault {
     }
 
     private func findReachableKeys(from point: Point, haveKeys: Set<Character>) -> [Character: KeyDistance] {
-        var queue = Queue<Point>()
-        queue.push(point)
+        var queue = Heap<Point>()
+        queue.insert(point)
 
         var distance = [point: 0]
         var keyDistance = [Character: KeyDistance]()
 
-        while let next = queue.pop() {
+        while let next = queue.popMin() {
             next.neighbors()
                 .filter { points[$0] != .wall }
                 .filter { distance[$0] == nil }
@@ -230,7 +230,7 @@ extension Vault {
                         if let key = key, !haveKeys.contains(key) {
                             keyDistance[key] = KeyDistance(point: point, distance: distance[point]!)
                         } else {
-                            queue.push(point)
+                            queue.insert(point)
                         }
                     }
                 }
@@ -242,8 +242,7 @@ extension Vault {
 
 final class Day18: AOCDay {
     private let grid: Grid<Tile>
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         grid = Grid.parse(input.components(separatedBy: "\n"))
     }
 
@@ -273,7 +272,7 @@ final class Day18: AOCDay {
         for p in entrance.neighbors() {
             points[p] = .wall
         }
-        for p in entrance.neighbors(adjacency: .diagonal) {
+        for p in entrance.neighbors(adjacency: .ordinal) {
             points[p] = .entrance
         }
         return Grid(points: points)

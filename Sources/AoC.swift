@@ -5,6 +5,7 @@
 import AoCTools
 
 @main
+@MainActor
 struct AdventOfCode {
     enum Day {
         case all
@@ -20,10 +21,11 @@ struct AdventOfCode {
         switch day {
         case .all:
             days.forEach { day in
-                day.init(input: nil).run()
+                day.init(input: day.input).run()
             }
         case .day(let day):
-            days[day-1].init(input: nil).run()
+            let day = days[day-1]
+            day.init(input: day.input).run()
         }
     }
 

@@ -12,8 +12,7 @@ final class Day10: AOCDay {
     let maxX: Int
     let maxY: Int
 
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+    init(input: String) {
         let lines = input.components(separatedBy: "\n")
         var grid = Set<Point>()
         for (y, line) in lines.enumerated() {

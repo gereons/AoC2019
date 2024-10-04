@@ -40,7 +40,7 @@ extension Day20 {
         let point: Point
     }
 
-    class Maze {
+    final class Maze {
         let points: [Point: Tile]
         private(set) var start = Point.zero
         private(set) var end = Point.zero

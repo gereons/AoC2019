@@ -166,8 +166,8 @@ extension Grid: Pathfinding {
 
 final class Day15: AOCDay {
     let program: [Int]
-    init(input: String? = nil) {
-        let input = input ?? Self.input
+
+    init(input: String) {
         program = input.components(separatedBy: ",").map { Int($0)! }
     }
 

@@ -7,9 +7,10 @@
 import AoCTools
 
 final class Day20: AOCDay {
-    private let input: String
-    init(input: String? = nil) {
-        self.input = input ?? Self.input
+    let input: String
+
+    init(input: String) {
+        self.input = input
     }
 
     func part1() -> Int {
