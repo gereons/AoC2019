@@ -20,16 +20,16 @@ final class IntcodeVM {
 
         var parameters: Int {
             switch self {
-            case .add: return 3
-            case .multiply: return 3
-            case .input: return 1
-            case .output: return 1
-            case .jumpIfTrue: return 2
-            case .jumpIfFalse: return 2
-            case .lessThan: return 3
-            case .equals: return 3
-            case .relativeBaseOffset: return 1
-            case .end: return 0
+            case .add: 3
+            case .multiply: 3
+            case .input: 1
+            case .output: 1
+            case .jumpIfTrue: 2
+            case .jumpIfFalse: 2
+            case .lessThan: 3
+            case .equals: 3
+            case .relativeBaseOffset: 1
+            case .end: 0
             }
         }
     }
@@ -79,7 +79,7 @@ final class IntcodeVM {
         case initial // before running or starting a program
         case running // while running a program
         case finished // after finishing a program
-        case awaitingInput // execution halted, can be contined when input is available
+        case awaitingInput // execution halted, can be continued when input is available
     }
 
     enum RunResult: Equatable {
@@ -97,6 +97,7 @@ final class IntcodeVM {
     private var vmState = State.initial
 
     let id: String
+
     init(id: String = "") {
         self.id = id
     }

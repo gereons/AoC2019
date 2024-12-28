@@ -105,7 +105,7 @@ extension Day20 {
 }
 
 extension Day20.Maze: Pathfinding {
-    func neighbors(for point: Point) -> [Point] {
+    func neighbors(of point: Point) -> [Point] {
         var neighbors = point.neighbors().filter { points[$0]?.isFloor == true }
         if let connect = connections[point] {
             neighbors.append(connect)

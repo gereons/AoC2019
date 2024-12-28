@@ -128,7 +128,7 @@ extension Point3 {
 }
 
 extension Day20.Maze3D: Pathfinding {
-    func neighbors(for point: Point3) -> [Point3] {
+    func neighbors(of point: Point3) -> [Point3] {
         let level = point.z
         if level >= self.levels {
             return []

@@ -157,7 +157,7 @@ extension Grid: Pathfinding {
         from.distance(to: to)
     }
 
-    func neighbors(for point: Point) -> [Point] {
+    func neighbors(of point: Point) -> [Point] {
         point
             .neighbors()
             .filter { points[$0] != .wall }

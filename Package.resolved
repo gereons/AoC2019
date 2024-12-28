@@ -1,13 +1,13 @@
 {
-  "originHash" : "290b23c4ae75522a5d33b6b075e85c8dc6b1a6d5b722d04c1110c09dcca45004",
+  "originHash" : "35bb2b5541e86ac8caa5442465b29d2c89d68fe72b9d80b4b3444dceec9e82e5",
   "pins" : [
     {
       "identity" : "aoctools",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/gereons/AoCTools",
       "state" : {
-        "revision" : "d7971984089e4724cee928895176db6e81939491",
-        "version" : "0.1.0"
+        "revision" : "d363eb88c324269a870d3fe233dd622c04ba3e60",
+        "version" : "0.1.6"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/attaswift/BigInt",
       "state" : {
-        "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
-        "version" : "5.3.0"
+        "revision" : "114343a705df4725dfe7ab8a2a326b8883cfd79c",
+        "version" : "5.5.1"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/lukepistrol/SwiftLintPlugin",
       "state" : {
-        "revision" : "bea71d23db993c58934ee704f798a66d7b8cb626",
-        "version" : "0.57.0"
+        "revision" : "87454f5c9ff4d644086aec2a0df1ffba678e7f3c",
+        "version" : "0.57.1"
       }
     }
   ],
