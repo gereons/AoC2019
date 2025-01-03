@@ -1,7 +1,6 @@
 import XCTest
 @testable import AdventOfCode
 
-@MainActor
 final class Day05Tests: XCTestCase {
     func testDay05_1a() throws {
         let vm = IntcodeVM()

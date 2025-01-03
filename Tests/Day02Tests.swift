@@ -1,7 +1,6 @@
 import XCTest
 @testable import AdventOfCode
 
-@MainActor
 final class Day02Tests: XCTestCase {
 
     private func runIntcode(_ input: [Int], resultIndex: Int = 0) -> Int {

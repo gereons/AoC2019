@@ -3,33 +3,69 @@
 //
 
 import AoCTools
+import Foundation
 
 @main
 @MainActor
-struct AdventOfCode {
-    enum Day {
-        case all
-        case day(Int)
-    }
+enum AdventOfCode {
+    // assign to eg `.day(1)`, leave as nil to run the puzzle for the current calendar day
+    static var defaultDay: Day? // = .day(1)
 
-    static func main() {
-        run(.all)
+    static func main() async {
+        var day = defaultDay ?? today
+
+        if CommandLine.argc > 1 {
+            let arg = CommandLine.arguments[1]
+            if let d = Int(arg), 1...25 ~= d {
+                day = .day(d)
+            } else if arg == "all" {
+                day = .allSequential
+            } else if arg == "all-parallel" {
+                day = .allParallel
+            }
+        }
+
+        await run(day)
         Timer.showTotal()
     }
 
-    private static func run(_ day: Day) {
+    static var today: Day {
+        let components = Calendar.current.dateComponents([.day, .month], from: Date())
+        let day = components.day!
+        if components.month == 12 && 1...25 ~= day {
+            return .day(day)
+        }
+        return .allSequential
+    }
+
+    private static func run(_ day: Day) async {
         switch day {
-        case .all:
-            days.forEach { day in
-                day.init(input: day.input).run()
+        case .allSequential:
+            for day in days {
+                await day.init(input: day.input).run()
+            }
+        case .allParallel:
+            await withTaskGroup(of: Void.self) { group in
+                for day in days {
+                    group.addTask {
+                        await day.init(input: day.input).run()
+                    }
+                }
+                for await _ in group {}
             }
         case .day(let day):
-            let day = days[day-1]
-            day.init(input: day.input).run()
+            let day = days[day - 1]
+            await day.init(input: day.input).run()
         }
     }
 
-    private static let days: [Runnable.Type] = [
+    enum Day {
+        case allSequential
+        case allParallel
+        case day(Int)
+    }
+
+    private static let days: [any AdventOfCodeDay.Type] = [
         Day01.self, Day02.self, Day03.self, Day04.self, Day05.self,
         Day06.self, Day07.self, Day08.self, Day09.self, Day10.self,
         Day11.self, Day12.self, Day13.self, Day14.self, Day15.self,

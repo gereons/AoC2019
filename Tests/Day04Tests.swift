@@ -1,7 +1,6 @@
 import XCTest
 @testable import AdventOfCode
 
-@MainActor
 final class Day04Tests: XCTestCase {
     func testDay04_1() throws {
         XCTAssertEqual(Day04.isValidPassword(111111), true)
