@@ -180,7 +180,7 @@ final class Day15: AdventOfCodeDay {
         let pathfinder = AStarPathfinder(map: grid)
         let path = pathfinder.shortestPath(from: .zero, to: oxygen)
 
-        return path.count - 1
+        return path.count
     }
 
     func part2() -> Int {

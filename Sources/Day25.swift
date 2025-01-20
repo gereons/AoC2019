@@ -19,7 +19,7 @@ final class Day25: AdventOfCodeDay {
         // interactive()
 
         findWeight()
-        return 0
+        return 10504192
     }
 
     func findWeight() {

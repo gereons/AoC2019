@@ -2,42 +2,36 @@ import Testing
 @testable import AdventOfCode
 
 @Suite struct Day18Tests {
-    @Test func testDay18_1a() throws {
+    @Test func testDay18_part1() throws {
         let input = """
         #########
         #b.A.@.a#
         #########
         """
-        let day = Day18(input: input)
+        var day = Day18(input: input)
         #expect(day.part1() == 8)
-    }
 
-    @Test func testDay18_1b() throws {
-        let input = """
+        let input2 = """
         ########################
         #f.D.E.e.C.b.A.@.a.B.c.#
         ######################.#
         #d.....................#
         ########################
         """
-        let day = Day18(input: input)
+        day = Day18(input: input2)
         #expect(day.part1() == 86)
-    }
 
-    @Test func testDay18_1c() throws {
-        let input = """
+        let input3 = """
         ########################
         #...............b.C.D.f#
         #.######################
         #.....@.a.B.c.d.A.e.F.g#
         ########################
         """
-        let day = Day18(input: input)
+        day = Day18(input: input3)
         #expect(day.part1() == 132)
-    }
 
-    @Test func testDay18_1d() throws {
-        let input = """
+        let input4 = """
         #################
         #i.G..c...e..H.p#
         ########.########
@@ -48,12 +42,10 @@ import Testing
         #l.F..d...h..C.m#
         #################
         """
-        let day = Day18(input: input)
+        day = Day18(input: input4)
         #expect(day.part1() == 136)
-    }
 
-    @Test func testDay18_1e() throws {
-        let input = """
+        let input5 = """
         ########################
         #@..............ac.GI.b#
         ###d#e#f################
@@ -61,11 +53,11 @@ import Testing
         ###g#h#i################
         ########################
         """
-        let day = Day18(input: input)
+        day = Day18(input: input5)
         #expect(day.part1() == 81)
     }
 
-    @Test func testDay18_2a() throws {
+    @Test func testDay18_part2() throws {
         let input = """
         #######
         #a.#Cd#
@@ -75,12 +67,10 @@ import Testing
         #cB#.b#
         #######
         """
-        let day = Day18(input: input)
+        var day = Day18(input: input)
         #expect(day.part2() == 8)
-    }
 
-    @Test func testDay18_2b() throws {
-        let input = """
+        let input2 = """
         ###############
         #d.ABC.#.....a#
         ######@#@######
@@ -89,12 +79,10 @@ import Testing
         #b.....#.....c#
         ###############
         """
-        let day = Day18(input: input)
+        day = Day18(input: input2)
         #expect(day.part2() == 24)
-    }
 
-    @Test func testDay18_2c() throws {
-        let input = """
+        let input3 = """
         #############
         #DcBa.#.GhKl#
         #.###@#@#I###
@@ -103,12 +91,10 @@ import Testing
         #fEbA.#.FgHi#
         #############
         """
-        let day = Day18(input: input)
+        day = Day18(input: input3)
         #expect(day.part2() == 32)
-    }
 
-    @Test func testDay18_2d() throws {
-        let input = """
+        let input4 = """
         #############
         #g#f.D#..h#l#
         #F###e#E###.#
@@ -119,7 +105,17 @@ import Testing
         #o#m..#i#jk.#
         #############
         """
-        let day = Day18(input: input)
+        day = Day18(input: input4)
         #expect(day.part2() == 72)
+    }
+
+    @Test func testDay18_part1_solution() throws {
+        let day = Day18(input: Day18.input)
+        #expect(day.part1() == 5198)
+    }
+
+    @Test func testDay18_part2_solution() throws {
+        let day = Day18(input: Day18.input)
+        #expect(day.part2() == 1736)
     }
 }

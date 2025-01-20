@@ -1,10 +1,3 @@
-//
-//  Day08Tests.swift
-//  AdventOfCode
-//
-//  Created by Gereon Steffens on 11.01.25.
-//
-
 import Testing
 @testable import AdventOfCode
 

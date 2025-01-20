@@ -11,7 +11,7 @@ import AoCTools
             #....
             """)
 
-    @Test func testDay24_1() throws {
+    @Test func testDay24_part1() throws {
         #expect(day.part1() == 2129920)
     }
 
@@ -115,7 +115,7 @@ import AoCTools
         #expect(n23.filter { $0.z == 1 }.allSatisfy { $0.y == 4 })
     }
 
-    @Test func testDay24_2() throws {
+    @Test func testDay24_part2() throws {
         let day = Day24(input: """
             ....#
             #..#.
@@ -124,5 +124,15 @@ import AoCTools
             #....
             """, generations: 10)
         #expect(day.part2() == 99)
+    }
+
+    @Test func testDay24_part1_solution() throws {
+        let day = Day24(input: Day24.input)
+        #expect(day.part1() == 13500447)
+    }
+
+    @Test func testDay24_part2_solution() throws {
+        let day = Day24(input: Day24.input)
+        #expect(day.part2() == 2120)
     }
 }

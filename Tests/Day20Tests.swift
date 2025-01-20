@@ -2,8 +2,8 @@ import Testing
 @testable import AdventOfCode
 
 @Suite struct Day20Tests {
-    @Test func testDay20_1a() throws {
-        let input = """
+    @Test func testDay20_par1() throws {
+        let input1 = """
                  A
                  A
           #######.#########
@@ -24,12 +24,10 @@ import Testing
                      Z
                      Z
         """
-        let day = Day20(input: input)
+        var day = Day20(input: input1)
         #expect(day.part1() == 23)
-    }
 
-    @Test func testDay20_1b() throws {
-        let input = """
+        let input2 = """
                            A
                            A
           #################.#############
@@ -68,12 +66,12 @@ import Testing
                    B   J   C
                    U   P   P
         """
-        let day = Day20(input: input)
+        day = Day20(input: input2)
         #expect(day.part1() == 58)
     }
 
-    @Test func testDay20_2a() throws {
-        let input = """
+    @Test func testDay20_part2() throws {
+        let input1 = """
                  A
                  A
           #######.#########
@@ -94,12 +92,10 @@ import Testing
                      Z
                      Z
         """
-        let day = Day20(input: input)
+        var day = Day20(input: input1)
         #expect(day.part2() == 26)
-    }
 
-    @Test func testDay20_2b() throws {
-        let input = """
+        let input2 = """
                            A
                            A
           #################.#############
@@ -138,12 +134,10 @@ import Testing
                    B   J   C
                    U   P   P
         """
-        let day = Day20(input: input)
+        day = Day20(input: input2)
         #expect(day.part2() == 0)
-    }
 
-    @Test func testDay20_2c() throws {
-        let input = """
+        let input3 = """
              Z L X W       C
              Z P Q B       K
   ###########.#.#.#.#######.###############
@@ -182,7 +176,17 @@ RE....#.#                           #......RF
                A O F   N
                A A D   M
 """
-        let day = Day20(input: input)
+        day = Day20(input: input3)
         #expect(day.part2() == 396)
+    }
+
+    @Test func testDay20_part1_solution() throws {
+        let day = Day20(input: Day20.input)
+        #expect(day.part1() == 686)
+    }
+
+    @Test func testDay20_part2_solution() throws {
+        let day = Day20(input: Day20.input)
+        #expect(day.part2() == 8384)
     }
 }
