@@ -1,8 +1,8 @@
-import XCTest
+import Testing
 @testable import AdventOfCode
 
-final class Day14Tests: XCTestCase {
-    func testDay14_1a() throws {
+@Suite struct Day14Tests {
+    @Test func testDay14_1a() throws {
         let day = Day14(input: """
             10 ORE => 10 A
             1 ORE => 1 B
@@ -11,10 +11,10 @@ final class Day14Tests: XCTestCase {
             7 A, 1 D => 1 E
             7 A, 1 E => 1 FUEL
             """)
-        XCTAssertEqual(day.part1(), 31)
+        #expect(day.part1() == 31)
     }
 
-    func testDay14_1b() throws {
+    @Test func testDay14_1b() throws {
         let day = Day14(input: """
             9 ORE => 2 A
             8 ORE => 3 B
@@ -24,7 +24,7 @@ final class Day14Tests: XCTestCase {
             4 C, 1 A => 1 CA
             2 AB, 3 BC, 4 CA => 1 FUEL
             """)
-        XCTAssertEqual(day.part1(), 165)
+        #expect(day.part1() == 165)
     }
 
     let r1 = """
@@ -38,9 +38,9 @@ final class Day14Tests: XCTestCase {
             3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT
             44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
             """
-    func testDay14_1c() throws {
+    @Test func testDay14_1c() throws {
         let day = Day14(input: r1)
-        XCTAssertEqual(day.part1(), 13312)
+        #expect(day.part1() == 13312)
     }
 
     let r2 = """
@@ -57,9 +57,9 @@ final class Day14Tests: XCTestCase {
             1 VJHF, 6 MNCFX => 4 RFSQX
             176 ORE => 6 VJHF
             """
-    func testDay14_1d() throws {
+    @Test func testDay14_1d() throws {
         let day = Day14(input: r2)
-        XCTAssertEqual(day.part1(), 180697)
+        #expect(day.part1() == 180697)
     }
 
     let r3 = """
@@ -81,14 +81,14 @@ final class Day14Tests: XCTestCase {
             7 XCVML => 6 RJRHP
             5 BHXH, 4 VRPVC => 5 LTCX
             """
-    func testDay14_1e() throws {
+    @Test func testDay14_1e() throws {
         let day = Day14(input: r3)
-        XCTAssertEqual(day.part1(), 2210736)
+        #expect(day.part1() == 2210736)
     }
 
-    func testDay14_2() throws {
-        XCTAssertEqual(Day14(input: r1).part2(), 82892753)
-        XCTAssertEqual(Day14(input: r2).part2(), 5586022)
-        XCTAssertEqual(Day14(input: r3).part2(), 460664)
+    @Test func testDay14_2() throws {
+        #expect(Day14(input: r1).part2() == 82892753)
+        #expect(Day14(input: r2).part2() == 5586022)
+        #expect(Day14(input: r3).part2() == 460664)
     }
 }

@@ -1,9 +1,9 @@
-import XCTest
+import Testing
 import AoCTools
 @testable import AdventOfCode
 
-final class Day10Tests: XCTestCase {
-    func testDay10_1() throws {
+@Suite struct Day10Tests {
+    @Test func testDay10_part1() throws {
         let d1 = Day10(input: """
             .#..#
             .....
@@ -11,7 +11,7 @@ final class Day10Tests: XCTestCase {
             ....#
             ...##
             """)
-        XCTAssertEqual(d1.part1(), 8)
+        #expect(d1.part1() == 8)
 
         let d2 = Day10(input: """
             ......#.#.
@@ -25,7 +25,7 @@ final class Day10Tests: XCTestCase {
             ##...#..#.
             .#....####
             """)
-        XCTAssertEqual(d2.part1(), 33)
+        #expect(d2.part1() == 33)
 
         let d3 = Day10(input: """
             #.#...#.#.
@@ -39,7 +39,7 @@ final class Day10Tests: XCTestCase {
             ......#...
             .####.###.
             """)
-        XCTAssertEqual(d3.part1(), 35)
+        #expect(d3.part1() == 35)
 
         let d4 = Day10(input: """
             .#..##.###...#######
@@ -63,10 +63,10 @@ final class Day10Tests: XCTestCase {
             #.#.#.#####.####.###
             ###.##.####.##.#..##
             """)
-        XCTAssertEqual(d4.part1(), 210)
+        #expect(d4.part1() == 210)
     }
 
-    func testDay10_2() throws {
+    @Test func testDay10_part2() throws {
         let d3 = Day10(input: """
         .#....#####...#..
         ##...##.#####..##
@@ -74,11 +74,9 @@ final class Day10Tests: XCTestCase {
         ..#.....#...###..
         ..#.#.....#....##
         """)
-        XCTAssertEqual(d3.part2(), 0)
-    }
+        #expect(d3.part2() == 0)
 
-    func testDay10_3() throws {
-        let d3 = Day10(input: """
+        let d4 = Day10(input: """
             .#..##.###...#######
             ##.############..##.
             .#.######.########.#
@@ -100,6 +98,16 @@ final class Day10Tests: XCTestCase {
             #.#.#.#####.####.###
             ###.##.####.##.#..##
             """)
-        XCTAssertEqual(d3.part2(), 802)
+        #expect(d4.part2() == 802)
+    }
+
+    @Test func testDay10_part1_solution() throws {
+        let day = Day10(input: Day10.input)
+        #expect(day.part1() == 230)
+    }
+
+    @Test func testDay10_part2_solution() throws {
+        let day = Day10(input: Day10.input)
+        #expect(day.part2() == 1205)
     }
 }

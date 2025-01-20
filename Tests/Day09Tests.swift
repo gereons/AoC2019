@@ -1,29 +1,30 @@
-import XCTest
+import Testing
 @testable import AdventOfCode
 
-final class Day09Tests: XCTestCase {
-    func testDay09_1() throws {
-        let program = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+@Suite struct Day09Tests {
+    @Test func testDay09_part1() throws {
         let vm = IntcodeVM()
-        let outputs = vm.run(program: program)
+        var program = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+        var outputs = vm.run(program: program)
+        #expect(outputs == program)
 
-        XCTAssertEqual(outputs, program)
+        program = [1102,34915192,34915192,7,4,7,99,0]
+        outputs = vm.run(program: program)
+        #expect(String(outputs[0]).count == 16)
+
+        program = [104,1125899906842624,99]
+        outputs = vm.run(program: program)
+
+        #expect(outputs[0] == program[1])
     }
 
-    func testDay09_2() throws {
-        let program = [1102,34915192,34915192,7,4,7,99,0]
-        let vm = IntcodeVM()
-        let outputs = vm.run(program: program)
-
-        XCTAssertEqual(String(outputs[0]).count, 16)
+    @Test func testDay09_part1_solution() throws {
+        let day = Day09(input: Day09.input)
+        #expect(day.part1() == 3533056970)
     }
 
-    func testDay09_3() throws {
-        let program = [104,1125899906842624,99]
-        let vm = IntcodeVM()
-        let outputs = vm.run(program: program)
-
-        XCTAssertEqual(outputs[0], program[1])
+    @Test func testDay09_part2_solution() throws {
+        let day = Day09(input: Day09.input)
+        #expect(day.part2() == 72852)
     }
-
 }

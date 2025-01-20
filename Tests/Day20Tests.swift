@@ -1,8 +1,8 @@
-import XCTest
+import Testing
 @testable import AdventOfCode
 
-final class Day20Tests: XCTestCase {
-    func testDay20_1a() throws {
+@Suite struct Day20Tests {
+    @Test func testDay20_1a() throws {
         let input = """
                  A
                  A
@@ -25,10 +25,10 @@ final class Day20Tests: XCTestCase {
                      Z
         """
         let day = Day20(input: input)
-        XCTAssertEqual(day.part1(), 23)
+        #expect(day.part1() == 23)
     }
 
-    func testDay20_1b() throws {
+    @Test func testDay20_1b() throws {
         let input = """
                            A
                            A
@@ -69,10 +69,10 @@ final class Day20Tests: XCTestCase {
                    U   P   P
         """
         let day = Day20(input: input)
-        XCTAssertEqual(day.part1(), 58)
+        #expect(day.part1() == 58)
     }
 
-    func testDay20_2a() throws {
+    @Test func testDay20_2a() throws {
         let input = """
                  A
                  A
@@ -95,10 +95,10 @@ final class Day20Tests: XCTestCase {
                      Z
         """
         let day = Day20(input: input)
-        XCTAssertEqual(day.part2(), 26)
+        #expect(day.part2() == 26)
     }
 
-    func testDay20_2b() throws {
+    @Test func testDay20_2b() throws {
         let input = """
                            A
                            A
@@ -139,10 +139,10 @@ final class Day20Tests: XCTestCase {
                    U   P   P
         """
         let day = Day20(input: input)
-        XCTAssertEqual(day.part2(), 0)
+        #expect(day.part2() == 0)
     }
 
-    func testDay20_2c() throws {
+    @Test func testDay20_2c() throws {
         let input = """
              Z L X W       C
              Z P Q B       K
@@ -183,6 +183,6 @@ RE....#.#                           #......RF
                A A D   M
 """
         let day = Day20(input: input)
-        XCTAssertEqual(day.part2(), 396)
+        #expect(day.part2() == 396)
     }
 }

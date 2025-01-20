@@ -1,18 +1,18 @@
-import XCTest
+import Testing
 @testable import AdventOfCode
 
-final class Day18Tests: XCTestCase {
-    func testDay18_1a() throws {
+@Suite struct Day18Tests {
+    @Test func testDay18_1a() throws {
         let input = """
         #########
         #b.A.@.a#
         #########
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part1(), 8)
+        #expect(day.part1() == 8)
     }
 
-    func testDay18_1b() throws {
+    @Test func testDay18_1b() throws {
         let input = """
         ########################
         #f.D.E.e.C.b.A.@.a.B.c.#
@@ -21,10 +21,10 @@ final class Day18Tests: XCTestCase {
         ########################
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part1(), 86)
+        #expect(day.part1() == 86)
     }
 
-    func testDay18_1c() throws {
+    @Test func testDay18_1c() throws {
         let input = """
         ########################
         #...............b.C.D.f#
@@ -33,10 +33,10 @@ final class Day18Tests: XCTestCase {
         ########################
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part1(), 132)
+        #expect(day.part1() == 132)
     }
 
-    func testDay18_1d() throws {
+    @Test func testDay18_1d() throws {
         let input = """
         #################
         #i.G..c...e..H.p#
@@ -49,10 +49,10 @@ final class Day18Tests: XCTestCase {
         #################
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part1(), 136)
+        #expect(day.part1() == 136)
     }
 
-    func testDay18_1e() throws {
+    @Test func testDay18_1e() throws {
         let input = """
         ########################
         #@..............ac.GI.b#
@@ -62,10 +62,10 @@ final class Day18Tests: XCTestCase {
         ########################
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part1(), 81)
+        #expect(day.part1() == 81)
     }
 
-    func testDay18_2a() throws {
+    @Test func testDay18_2a() throws {
         let input = """
         #######
         #a.#Cd#
@@ -76,10 +76,10 @@ final class Day18Tests: XCTestCase {
         #######
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part2(), 8)
+        #expect(day.part2() == 8)
     }
 
-    func testDay18_2b() throws {
+    @Test func testDay18_2b() throws {
         let input = """
         ###############
         #d.ABC.#.....a#
@@ -90,10 +90,10 @@ final class Day18Tests: XCTestCase {
         ###############
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part2(), 24)
+        #expect(day.part2() == 24)
     }
 
-    func testDay18_2c() throws {
+    @Test func testDay18_2c() throws {
         let input = """
         #############
         #DcBa.#.GhKl#
@@ -104,10 +104,10 @@ final class Day18Tests: XCTestCase {
         #############
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part2(), 32)
+        #expect(day.part2() == 32)
     }
 
-    func testDay18_2d() throws {
+    @Test func testDay18_2d() throws {
         let input = """
         #############
         #g#f.D#..h#l#
@@ -120,6 +120,6 @@ final class Day18Tests: XCTestCase {
         #############
         """
         let day = Day18(input: input)
-        XCTAssertEqual(day.part2(), 72)
+        #expect(day.part2() == 72)
     }
 }

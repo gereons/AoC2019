@@ -1,38 +1,38 @@
-import XCTest
+import Testing
 @testable import AdventOfCode
 
-final class Day22Tests: XCTestCase {
-    func testDay22_1a() throws {
+@Suite struct Day22Tests {
+    @Test func testDay22_1a() throws {
         let day = Day22(input: """
         deal with increment 7
         deal into new stack
         deal into new stack
         """, deckSize: 10)
-        XCTAssertEqual(day.part1(), 0)
-        XCTAssertEqual(day.deck, [0,3,6,9,2,5,8,1,4,7])
+        #expect(day.part1() == 0)
+        #expect(day.deck == [0,3,6,9,2,5,8,1,4,7])
     }
 
-    func testDay22_1b() throws {
+    @Test func testDay22_1b() throws {
         let day = Day22(input: """
         cut 6
         deal with increment 7
         deal into new stack
         """, deckSize: 10)
-        XCTAssertEqual(day.part1(), 0)
-        XCTAssertEqual(day.deck, [3, 0, 7, 4, 1, 8, 5, 2, 9, 6])
+        #expect(day.part1() == 0)
+        #expect(day.deck == [3, 0, 7, 4, 1, 8, 5, 2, 9, 6])
     }
 
-    func testDay22_1c() throws {
+    @Test func testDay22_1c() throws {
         let day = Day22(input: """
         deal with increment 7
         deal with increment 9
         cut -2
         """, deckSize: 10)
-        XCTAssertEqual(day.part1(), 0)
-        XCTAssertEqual(day.deck, [6, 3, 0, 7, 4, 1, 8, 5, 2, 9])
+        #expect(day.part1() == 0)
+        #expect(day.deck == [6, 3, 0, 7, 4, 1, 8, 5, 2, 9])
     }
 
-    func testDay22_1d() throws {
+    @Test func testDay22_1d() throws {
         let day = Day22(input: """
         deal into new stack
         cut -2
@@ -45,7 +45,7 @@ final class Day22Tests: XCTestCase {
         deal with increment 3
         cut -1
         """, deckSize: 10)
-        XCTAssertEqual(day.part1(), 0)
-        XCTAssertEqual(day.deck, [9, 2, 5, 8, 1, 4, 7, 0, 3, 6])
+        #expect(day.part1() == 0)
+        #expect(day.deck == [9, 2, 5, 8, 1, 4, 7, 0, 3, 6])
     }
 }

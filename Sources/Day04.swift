@@ -19,36 +19,39 @@ final class Day04: AdventOfCodeDay {
     func part1() -> Int {
         range
             .map { $0 }
-            .filter { Self.isValidPassword($0) }
+            .filter { isValidPassword($0) }
             .count
     }
 
-    static func isValidPassword(_ n: Int) -> Bool {
-        let s = String(n)
-        let digits = s.map { $0 }
-
-        if Set(digits).count == digits.count { return false }
-        for index in 0..<digits.count - 1 {
-            if digits[index] > digits[index+1] { return false }
-        }
-        return true
-    }
+//    private func isValidPassword(_ n: Int) -> Bool {
+//        let s = String(n)
+//        let digits = s.map { $0 }
+//
+//        if Set(digits).count == digits.count { return false }
+//        for index in 0..<digits.count - 1 {
+//            if digits[index] > digits[index+1] { return false }
+//        }
+//        return true
+//    }
 
     func part2() -> Int {
         range
             .map { $0 }
-            .filter { Self.isValidPassword2($0) }
+            .filter { isValidPassword($0, part2: true) }
             .count
     }
 
-    static func isValidPassword2(_ n: Int) -> Bool {
-        let s = String(n)
-        let digits = s.map { $0 }
+    func isValidPassword(_ n: Int, part2: Bool = false) -> Bool {
+        let digits = Array("\(n)")
 
         if Set(digits).count == digits.count { return false }
         for index in 0..<digits.count - 1 {
             if digits[index] > digits[index+1] { return false }
         }
+        if !part2 {
+            return true
+        }
+
         var counts = [Character: Int]()
         digits.forEach {
             counts[$0, default: 0] += 1

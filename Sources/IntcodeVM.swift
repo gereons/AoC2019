@@ -109,7 +109,7 @@ final class IntcodeVM {
     ///   - patches: initial memory patches
     /// - Returns: the produced outputs
     func run(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> [Int] {
-        assert(vmState == .initial)
+        assert(vmState == .initial || vmState == .finished)
         let result = start(program: program, inputs: inputs, patches: patches)
         switch result {
         case .end(let outputs):
@@ -128,7 +128,7 @@ final class IntcodeVM {
     ///   - patches: initial memory patches
     /// - Returns: the reason for stopping
     func start(program: [Int], inputs: [Int] = [], patches: [Int: Int] = [:]) -> RunResult {
-        assert(vmState == .initial)
+        assert(vmState == .initial || vmState == .finished)
         let keysAndValues = program.enumerated().map { ($0.offset, $0.element) }
         memory.storage = Dictionary(uniqueKeysWithValues: keysAndValues)
 
@@ -136,6 +136,8 @@ final class IntcodeVM {
             memory[index] = value
         }
         self.inputs = inputs
+        self.outputs = []
+        self.programCounter = 0
         defer { assert(vmState == .finished || vmState == .awaitingInput) }
         return run()
     }
