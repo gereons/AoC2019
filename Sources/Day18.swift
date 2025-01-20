@@ -66,7 +66,7 @@ private struct Key: Hashable {
     let point: Point
 }
 
-private struct Keys: Hashable {
+private struct KeyPair: Hashable {
     let from: Key
     let to: Key
 }
@@ -83,7 +83,7 @@ private class Vault {
     let grid: Grid<Tile>
     let entrances: [Point]
     let keys: [Key]
-    var paths = [Keys: Path]()
+    var paths = [KeyPair: Path]()
 
     var points: [Point: Tile] { grid.points }
 
@@ -104,21 +104,21 @@ private class Vault {
         self.paths = paths
     }
 
-    private func findAllPaths(between keys: [Key], entrances: [Point]) -> [Keys: Path] {
-        var result = [Keys: Path]()
+    private func findAllPaths(between keys: [Key], entrances: [Point]) -> [KeyPair: Path] {
+        var result = [KeyPair: Path]()
 
-        let entranceKeys = entrances.map { Key(letter: "@", point: $0) }
+        let entrances = entrances.map { Key(letter: "@", point: $0) }
         for key1 in keys {
-            for entrance in entranceKeys {
+            for entrance in entrances {
                 let path = pathFrom(entrance, to: key1)
                 if path.length > 0 {
-                    result[Keys(from: entrance, to: key1)] = path
+                    result[KeyPair(from: entrance, to: key1)] = path
                 }
             }
             for key2 in keys where key1 != key2 {
                 let path = pathFrom(key1, to: key2)
                 if path.length > 0 {
-                    result[Keys(from: key1, to: key2)] = path
+                    result[KeyPair(from: key1, to: key2)] = path
                 }
             }
         }
@@ -163,25 +163,26 @@ extension Vault {
         let keys: Set<Character>
     }
 
-    func minimumSteps(from: Set<Point>) -> Int {
+    func minimumSteps(from entrances: Set<Point>) -> Int {
         var seen = [MemoKey: Int]()
-        return minimumSteps(from: from, haveKeys: [], seen: &seen)
+        return minimumSteps(from: entrances, haveKeys: [], seen: &seen)
     }
 
-    private func minimumSteps(from: Set<Point>,
-                              haveKeys: Set<Character>,
-                              seen: inout [MemoKey: Int]
+    private func minimumSteps(
+        from entrances: Set<Point>,
+        haveKeys: Set<Character>,
+        seen: inout [MemoKey: Int]
     ) -> Int {
-        let state = MemoKey(points: from, keys: haveKeys)
+        let state = MemoKey(points: entrances, keys: haveKeys)
         if let distance = seen[state] {
             return distance
         }
 
-        let distances = findReachable(from: from, haveKeys).map {
+        let distances = findReachable(from: entrances, haveKeys).map {
             let at = $0.value.at
             let distance = $0.value.distance
             let cause = $0.value.cause
-            return distance + minimumSteps(from: from - cause + at, haveKeys: haveKeys + $0.key, seen: &seen)
+            return distance + minimumSteps(from: entrances - cause + at, haveKeys: haveKeys + $0.key, seen: &seen)
         }
         let answer = distances.min(by: <) ?? 0
         seen[state] = answer
@@ -211,17 +212,17 @@ extension Vault {
     }
 
     private func findReachableKeys(from point: Point, haveKeys: Set<Character>) -> [Character: KeyDistance] {
-        var queue = Heap<Point>()
-        queue.insert(point)
+        var queue = Deque<Point>()
+        queue.append(point)
 
         var distance = [point: 0]
         var keyDistance = [Character: KeyDistance]()
 
-        while let next = queue.popMin() {
-            next.neighbors()
+        while let next = queue.popFirst() {
+            let neighbors = next.neighbors()
                 .filter { points[$0] != .wall }
                 .filter { distance[$0] == nil }
-                .forEach { point in
+            for point in neighbors {
                     distance[point] = distance[next]! + 1
 
                     let lock = points[point]?.lock
@@ -230,7 +231,7 @@ extension Vault {
                         if let key = key, !haveKeys.contains(key) {
                             keyDistance[key] = KeyDistance(point: point, distance: distance[point]!)
                         } else {
-                            queue.insert(point)
+                            queue.append(point)
                         }
                     }
                 }
