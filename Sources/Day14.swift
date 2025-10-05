@@ -57,12 +57,12 @@ final class Day14: AdventOfCodeDay {
     }
 
     func part1() -> Int {
-        let ore = need(1, "FUEL")
+        var inventory = [String: Int]()
+        let ore = need(1, "FUEL", &inventory)
         return ore
     }
 
-    private func need(_ amount: Int, _ stuff: String) -> Int {
-        var inventory = [String: Int]()
+    private func need(_ amount: Int, _ stuff: String, _ inventory: inout [String: Int]) -> Int {
         if stuff == "ORE" {
             return amount
         }
@@ -84,7 +84,7 @@ final class Day14: AdventOfCodeDay {
             }
 
             return producer.input.reduce(0) {
-                $0 + need($1.amount * iterations, $1.name)
+                $0 + need($1.amount * iterations, $1.name, &inventory)
             }
         }
         return 0
@@ -96,12 +96,12 @@ final class Day14: AdventOfCodeDay {
 
     func part2() -> Int {
         let ore = 1000000000000
-
-        let fuel1 = need(1, "FUEL")
+        var inventory = [String: Int]()
+        let fuel1 = need(1, "FUEL", &inventory)
 
         let range = 1 ... ore/fuel1 * 2
         let index = range.binarySearch {
-            need($0, "FUEL") <= ore
+            need($0, "FUEL", &inventory) <= ore
         }
 
         let fuel = range.distance(from: range.startIndex, to: index)

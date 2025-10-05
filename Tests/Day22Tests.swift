@@ -9,7 +9,7 @@ import Testing
         deal into new stack
         """, deckSize: 10)
         #expect(day.part1() == 0)
-        #expect(day.deck == [0,3,6,9,2,5,8,1,4,7])
+        #expect(day.deck == [0, 3, 6, 9, 2, 5, 8, 1, 4, 7])
 
         day = Day22(input: """
         cut 6

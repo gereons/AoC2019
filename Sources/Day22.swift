@@ -26,11 +26,11 @@ private enum Shuffle {
     }
 }
 
-final class Day22: AdventOfCodeDay {
+final class Day22: AdventOfCodeDay, @unchecked Sendable {
     let title = "Slam Shuffle"
     
     private let shuffles: [Shuffle]
-    let deck: [Int]
+    var deck: [Int]
 
     convenience init(input: String) {
         self.init(input: input, deckSize: 10007)
@@ -50,7 +50,6 @@ final class Day22: AdventOfCodeDay {
     }
 
     private func perform(_ shuffle: Shuffle) {
-        var deck = self.deck
         switch shuffle {
         case .newStack:
             deck = deck.reversed()
