@@ -30,7 +30,7 @@ final class Day22: AdventOfCodeDay {
     let title = "Slam Shuffle"
     
     private let shuffles: [Shuffle]
-    private let deck: [Int]
+    let deck: [Int]
 
     convenience init(input: String) {
         self.init(input: input, deckSize: 10007)
