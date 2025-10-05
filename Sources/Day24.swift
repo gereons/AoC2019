@@ -6,7 +6,9 @@
 
 import AoCTools
 
-private enum Tile: Character, Drawable, Hashable, Equatable {
+extension Grid: @retroactive @unchecked Sendable {}
+
+private enum Tile: Character, Drawable, Hashable, Equatable, Sendable {
     case bug = "#"
     case empty = "."
 }

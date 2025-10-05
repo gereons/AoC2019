@@ -22,7 +22,7 @@ private struct Ingredient: CustomStringConvertible {
     }
 }
 
-private struct Reaction: CustomStringConvertible {
+private struct Reaction: CustomStringConvertible, Sendable {
     let input: [Ingredient]
     let output: Ingredient
 
@@ -49,8 +49,7 @@ final class Day14: AdventOfCodeDay {
     let title = "Space Stoichiometry"
     
     private let reactions: [Reaction]
-    private var producers = [String: Reaction]()
-    private var inventory = [String: Int]()
+    private let producers: [String: Reaction]
 
     init(input: String) {
         reactions = input.components(separatedBy: "\n").map { Reaction($0) }
@@ -63,6 +62,7 @@ final class Day14: AdventOfCodeDay {
     }
 
     private func need(_ amount: Int, _ stuff: String) -> Int {
+        var inventory = [String: Int]()
         if stuff == "ORE" {
             return amount
         }

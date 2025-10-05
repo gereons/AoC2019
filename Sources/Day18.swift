@@ -7,7 +7,7 @@
 import AoCTools
 import Collections
 
-private enum Tile: Drawable, Equatable {
+private enum Tile: Drawable, Equatable, Sendable {
     var draw: Character {
         switch self {
         case .wall: return "#"

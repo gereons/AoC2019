@@ -30,7 +30,7 @@ final class Day22: AdventOfCodeDay {
     let title = "Slam Shuffle"
     
     private let shuffles: [Shuffle]
-    private(set) var deck: [Int]
+    private let deck: [Int]
 
     convenience init(input: String) {
         self.init(input: input, deckSize: 10007)
@@ -50,6 +50,7 @@ final class Day22: AdventOfCodeDay {
     }
 
     private func perform(_ shuffle: Shuffle) {
+        var deck = self.deck
         switch shuffle {
         case .newStack:
             deck = deck.reversed()
